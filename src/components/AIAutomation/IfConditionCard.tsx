@@ -98,8 +98,8 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
       {/* Condition button - aligned with the When component's Select */}
       {(conditionType === 'traditional' && conditions.length === 0) || 
        (conditionType === 'ai' && !aiAgentType) ? (
-        <Box sx={{ pl: 5, mb: 2, backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2, display: 'inline-flex', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
             <IconButton 
               onClick={handleAddCondition}
               size="small"

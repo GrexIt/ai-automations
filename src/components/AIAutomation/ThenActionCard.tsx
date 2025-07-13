@@ -4,8 +4,10 @@ import {
   Typography,
   Card,
   ToggleButtonGroup,
-  ToggleButton
+  ToggleButton,
+  IconButton
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import StandardActionSelector from './StandardActionSelector';
@@ -49,15 +51,31 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
           onChange={handleActionTypeChange}
           size="small"
           aria-label="action type"
-          sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' } }}
+          sx={{ 
+            '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' },
+            border: '1px solid #e0e0e0',
+            borderRadius: 1
+          }}
         >
-          <ToggleButton value="standard" aria-label="standard actions">
+          <ToggleButton 
+            value="standard" 
+            aria-label="standard actions"
+            sx={{ 
+              backgroundColor: actionType === 'standard' ? '#f0f0f0' : 'transparent',
+              fontWeight: 400
+            }}
+          >
             STANDARD
           </ToggleButton>
           <ToggleButton 
             value="ai" 
             aria-label="ai actions"
-            sx={{ display: 'flex', gap: 0.5 }}
+            sx={{ 
+              display: 'flex', 
+              gap: 0.5,
+              backgroundColor: actionType === 'ai' ? '#f0f0f0' : 'transparent',
+              fontWeight: 400
+            }}
           >
             <AutoAwesomeIcon fontSize="small" />
             AI AGENT
@@ -65,15 +83,91 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
         </ToggleButtonGroup>
       </Box>
       
-      <Box sx={{ pl: 5 }}>
-        {actionType === 'standard' ? (
-          // Standard actions UI
+      {/* Add Action button - styled like Condition button in IfConditionCard */}
+      {actionType === 'standard' && !standardAction ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
+            <IconButton 
+              onClick={() => setStandardAction('send_email')}
+              size="small"
+              disableRipple
+              sx={{ 
+                backgroundColor: 'primary.main', 
+                color: 'white',
+                '&:hover': { backgroundColor: 'primary.main' },
+                width: 22,
+                height: 22,
+                minHeight: 0,
+                padding: '3px',
+                fontSize: '0.8rem',
+                borderRadius: '50%',
+                mr: 0.8
+              }}
+            >
+              <AddIcon sx={{ fontSize: '16px' }} />
+            </IconButton>
+            <Typography 
+              onClick={() => setStandardAction('send_email')}
+              sx={{ 
+                color: 'primary.main',
+                fontWeight: 500,
+                fontSize: '0.9rem',
+                cursor: 'pointer'
+              }}
+            >
+              Action
+            </Typography>
+          </Box>
+        </Box>
+      ) : actionType === 'ai' && !showAiActionSelector && !selectedAiAction ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
+            <IconButton 
+              onClick={() => setShowAiActionSelector(true)}
+              size="small"
+              disableRipple
+              sx={{ 
+                backgroundColor: 'primary.main', 
+                color: 'white',
+                '&:hover': { backgroundColor: 'primary.main' },
+                width: 22,
+                height: 22,
+                minHeight: 0,
+                padding: '3px',
+                fontSize: '0.8rem',
+                borderRadius: '50%',
+                mr: 0.8
+              }}
+            >
+              <AddIcon sx={{ fontSize: '16px' }} />
+            </IconButton>
+            <Typography 
+              onClick={() => setShowAiActionSelector(true)}
+              sx={{ 
+                color: 'primary.main',
+                fontWeight: 500,
+                fontSize: '0.9rem',
+                cursor: 'pointer'
+              }}
+            >
+              Action
+            </Typography>
+          </Box>
+        </Box>
+      ) : null}
+      
+      {/* Display appropriate content based on condition type and state */}
+      {actionType === 'standard' && standardAction ? (
+        // Standard actions UI
+        <Box sx={{ pl: 5 }}>
           <StandardActionSelector
             standardAction={standardAction}
             setStandardAction={setStandardAction}
           />
-        ) : (
-          // AI actions UI with progressive disclosure
+        </Box>
+      ) : actionType === 'ai' && (showAiActionSelector || selectedAiAction) ? (
+        // AI actions UI with progressive disclosure
+        <Box sx={{ pl: 5 }}>
           <AIActionSelectorContainer 
             showAiActionSelector={showAiActionSelector}
             selectedAiAction={selectedAiAction}
@@ -81,8 +175,8 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
             handleAiActionSelect={handleAiActionSelect}
             renderSelectedAiAction={renderSelectedAiAction}
           />
-        )}
-      </Box>
+        </Box>
+      ) : null}
     </Card>
   );
 };

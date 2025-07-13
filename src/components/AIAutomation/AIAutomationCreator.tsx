@@ -37,8 +37,9 @@ import FolderIcon from '@mui/icons-material/Folder';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// Import our new AIAgentBlock component
+// Import our components
 import AIAgentBlock from './AIAgentBlock';
+import AIAssist from './AIAssist';
 import AIActionSelector from './AIActionSelector';
 
 const AIAutomationCreator: React.FC = () => {
@@ -600,6 +601,9 @@ const AIAutomationCreator: React.FC = () => {
               </Box>
             </Collapse>
           </Card>
+          
+          {/* AI Assist Chat Component */}
+          <AIAssist compactInputStyles={compactInputStyles} />
         </Box>
       )}
       

@@ -6,12 +6,12 @@
  * Styles for compact input fields with reduced height and padding
  */
 export const compactInputStyles = {
-  height: '40px',
+  height: '32px',
   '& .MuiInputBase-root': {
-    height: '40px'
+    height: '32px'
   },
   '& .MuiOutlinedInput-input, & .MuiSelect-select': {
-    padding: '5px 14px'
+    padding: '3px 14px'
   }
 };
 

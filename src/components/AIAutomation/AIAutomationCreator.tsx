@@ -186,9 +186,6 @@ const AIAutomationCreator: React.FC = () => {
         {/* Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton sx={{ mr: 1 }}>
-              <ArrowBackIcon />
-            </IconButton>
             <Typography variant="h5">Create new automation</Typography>
           </Box>
           

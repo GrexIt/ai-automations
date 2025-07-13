@@ -4,26 +4,93 @@ import {
   Typography,
   TextField,
   Button,
-  Paper,
   Container,
-  IconButton,
   MenuItem,
   Select,
   FormControl,
-  InputLabel,
-  Divider,
-  Card
+  Card,
+  ToggleButton,
+  ToggleButtonGroup,
+  IconButton
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+
+// Import our new AIAgentBlock component
+import AIAgentBlock from './AIAgentBlock';
+import AIActionSelector from './AIActionSelector';
 
 const AIAutomationCreator: React.FC = () => {
   const [automationName, setAutomationName] = useState('');
   const [triggerType, setTriggerType] = useState('new_conversation');
   const [condition, setCondition] = useState('');
+  const [conditionType, setConditionType] = useState('traditional'); // 'traditional' or 'ai'
+  const [aiAgentType, setAiAgentType] = useState('extraction');
+  
+  // Action state
+  const [actionType, setActionType] = useState('standard'); // 'standard' or 'ai'
+  const [standardAction, setStandardAction] = useState('');
+  const [selectedAiAction, setSelectedAiAction] = useState('');
+  const [showAiActionSelector, setShowAiActionSelector] = useState(false);
+  
+  const handleConditionTypeChange = (_event: React.MouseEvent<HTMLElement>, newType: string | null) => {
+    if (newType !== null) {
+      setConditionType(newType);
+    }
+  };
+  
+  const handleAiAgentTypeChange = (newType: string) => {
+    setAiAgentType(newType);
+  };
+  
+  const handleActionTypeChange = (_event: React.MouseEvent<HTMLElement>, newType: string | null) => {
+    if (newType !== null) {
+      setActionType(newType);
+      if (newType === 'ai') {
+        setShowAiActionSelector(true);
+      }
+    }
+  };
+  
+  const handleAiActionSelect = (actionId: string) => {
+    setSelectedAiAction(actionId);
+    setShowAiActionSelector(false);
+  };
+  
+  // Function to render the selected AI action card
+  const renderSelectedAiAction = () => {
+    const actionMap: Record<string, { title: string, description: string }> = {
+      'summarize': { title: 'Summarize', description: 'Create a concise summary of the conversation' },
+      'draft_response': { title: 'Draft Response', description: 'Generate a response based on conversation context' },
+      'categorize': { title: 'Categorize', description: 'Analyze and categorize the conversation type' },
+      'sentiment': { title: 'Sentiment Analysis', description: 'Detect customer sentiment from conversation' },
+      'custom_prompt': { title: 'Custom Prompt', description: 'Create your own AI instruction' }
+    };
+    
+    const action = actionMap[selectedAiAction];
+    if (!action) return null;
+    
+    return (
+      <Card variant="outlined" sx={{ mb: 2, p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <AutoAwesomeIcon color="primary" sx={{ mr: 1 }} />
+            <Typography variant="subtitle1">{action.title}</Typography>
+          </Box>
+          <Box>
+            <IconButton size="small" onClick={() => setShowAiActionSelector(true)}>
+              <AddIcon fontSize="small" />
+            </IconButton>
+          </Box>
+        </Box>
+        <Typography variant="body2" color="text.secondary">{action.description}</Typography>
+      </Card>
+    );
+  };
 
   return (
     <Container maxWidth="md">
@@ -85,74 +152,204 @@ const AIAutomationCreator: React.FC = () => {
 
         {/* If Section */}
         <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <RadioButtonUncheckedIcon color="primary" sx={{ mr: 2 }} />
-            <Typography variant="subtitle1">If</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <RadioButtonUncheckedIcon color="primary" sx={{ mr: 2 }} />
+              <Typography variant="subtitle1">If</Typography>
+            </Box>
+            
+            {/* Toggle between traditional and AI conditions */}
+            <ToggleButtonGroup
+              value={conditionType}
+              exclusive
+              onChange={handleConditionTypeChange}
+              size="small"
+              aria-label="condition type"
+            >
+              <ToggleButton value="traditional" aria-label="traditional conditions">
+                Traditional
+              </ToggleButton>
+              <ToggleButton 
+                value="ai" 
+                aria-label="ai agents"
+                sx={{ display: 'flex', gap: 1 }}
+              >
+                <AutoAwesomeIcon fontSize="small" />
+                AI Agent
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Box>
           
-          <Box 
-            sx={{ 
-              pl: 5, 
-              backgroundColor: '#f5f8ff', 
-              borderRadius: 1, 
-              p: 2 
-            }}
-          >
-            <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
-              <Select
-                value={condition}
-                onChange={(e) => setCondition(e.target.value)}
-                displayEmpty
-                renderValue={() => "Select condition"}
-                sx={{ backgroundColor: 'white' }}
-              >
-                <MenuItem value="subject_contains">Subject contains</MenuItem>
-                <MenuItem value="from_email">From email</MenuItem>
-                <MenuItem value="body_contains">Body contains</MenuItem>
-                <MenuItem value="ai_detected">AI detected condition</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <Button 
-              startIcon={<AddIcon />} 
-              sx={{ color: 'text.secondary' }}
+          {conditionType === 'traditional' ? (
+            // Traditional conditions UI
+            <Box 
+              sx={{ 
+                pl: 5, 
+                backgroundColor: '#f5f8ff', 
+                borderRadius: 1, 
+                p: 2 
+              }}
             >
-              OR condition
-            </Button>
-            
-            <Box sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
-              <Button
-                variant="outlined"
-                color="primary"
-                startIcon={<AddIcon />}
-                sx={{ width: '100%', borderStyle: 'dashed' }}
+              <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
+                <Select
+                  value={condition}
+                  onChange={(e) => setCondition(e.target.value)}
+                  displayEmpty
+                  renderValue={() => "Select condition"}
+                  sx={{ backgroundColor: 'white' }}
+                >
+                  <MenuItem value="subject_contains">Subject contains</MenuItem>
+                  <MenuItem value="from_email">From email</MenuItem>
+                  <MenuItem value="body_contains">Body contains</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <Button 
+                startIcon={<AddIcon />} 
+                sx={{ color: 'text.secondary' }}
               >
-                + AND condition
+                OR condition
               </Button>
+              
+              <Box sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  sx={{ width: '100%', borderStyle: 'dashed' }}
+                >
+                  + AND condition
+                </Button>
+              </Box>
             </Box>
-          </Box>
+          ) : (
+            // AI Agent conditions UI
+            <Box sx={{ pl: 5 }}>
+              <AIAgentBlock 
+                onAgentTypeChange={handleAiAgentTypeChange}
+                selectedAgentType={aiAgentType}
+              />
+              
+              <Box sx={{ pl: 2, mt: 2 }}>
+                <Button 
+                  startIcon={<AddIcon />} 
+                  sx={{ color: 'text.secondary' }}
+                >
+                  OR another AI agent
+                </Button>
+              </Box>
+            </Box>
+          )}
         </Card>
 
         {/* Then Section */}
         <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <CheckCircleOutlineIcon color="primary" sx={{ mr: 2 }} />
-            <Typography variant="subtitle1">Then</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <CheckCircleOutlineIcon color="primary" sx={{ mr: 2 }} />
+              <Typography variant="subtitle1">Then</Typography>
+            </Box>
+            
+            {/* Toggle between standard and AI actions */}
+            <ToggleButtonGroup
+              value={actionType}
+              exclusive
+              onChange={handleActionTypeChange}
+              size="small"
+              aria-label="action type"
+            >
+              <ToggleButton value="standard" aria-label="standard actions">
+                Standard
+              </ToggleButton>
+              <ToggleButton 
+                value="ai" 
+                aria-label="ai actions"
+                sx={{ display: 'flex', gap: 1 }}
+              >
+                <AutoAwesomeIcon fontSize="small" />
+                AI Action
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Box>
           
           <Box sx={{ pl: 5 }}>
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              height: '100px', 
-              border: '2px dashed #ccc', 
-              borderRadius: 1 
-            }}>
-              <Typography color="text.secondary">
-                Add actions here
-              </Typography>
-            </Box>
+            {actionType === 'standard' ? (
+              // Standard actions UI
+              <Box 
+                sx={{ 
+                  backgroundColor: '#f5f8ff', 
+                  borderRadius: 1, 
+                  p: 2 
+                }}
+              >
+                <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
+                  <Select
+                    value={standardAction}
+                    onChange={(e) => setStandardAction(e.target.value)}
+                    displayEmpty
+                    renderValue={() => "Select action"}
+                    sx={{ backgroundColor: 'white' }}
+                  >
+                    <MenuItem value="send_email">Send email</MenuItem>
+                    <MenuItem value="add_label">Add label</MenuItem>
+                    <MenuItem value="assign_to">Assign to</MenuItem>
+                    <MenuItem value="create_task">Create task</MenuItem>
+                  </Select>
+                </FormControl>
+                
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  sx={{ mt: 2, width: '100%', borderStyle: 'dashed' }}
+                >
+                  + Add another action
+                </Button>
+              </Box>
+            ) : (
+              // AI actions UI with progressive disclosure
+              <Box>
+                {showAiActionSelector ? (
+                  <AIActionSelector onSelect={handleAiActionSelect} />
+                ) : selectedAiAction ? (
+                  // Show the selected AI action
+                  <Box>
+                    {renderSelectedAiAction()}
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<AddIcon />}
+                      sx={{ width: '100%', borderStyle: 'dashed' }}
+                      onClick={() => setShowAiActionSelector(true)}
+                    >
+                      + Add another AI action
+                    </Button>
+                  </Box>
+                ) : (
+                  // Show initial action selection prompt
+                  <Box 
+                    sx={{ 
+                      backgroundColor: '#f8f5ff', 
+                      borderRadius: 1, 
+                      p: 2,
+                      textAlign: 'center'
+                    }}
+                  >
+                    <Typography variant="body1" sx={{ mb: 2 }}>
+                      Select an AI-powered action to automate your workflow
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<AutoAwesomeIcon />}
+                      onClick={() => setShowAiActionSelector(true)}
+                    >
+                      Choose AI Action
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            )}
           </Box>
         </Card>
 

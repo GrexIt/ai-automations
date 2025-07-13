@@ -64,32 +64,51 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
           size="small"
           aria-label="condition type"
           sx={{ 
-            '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' },
-            border: '1px solid #e0e0e0',
-            borderRadius: 1
+            '& .MuiToggleButton-root': { 
+              py: 0.1, 
+              px: 2, 
+              minHeight: '22px',
+              transition: 'all 0.15s ease',
+              fontWeight: 500,
+              fontSize: '0.75rem',
+              border: 'none',
+              color: '#5f6368',
+              '&.Mui-selected': {
+                color: '#202124',
+              }
+            },
+            bgcolor: '#f1f3f4',
+            borderRadius: 3,
+            p: 0.2,
           }}
         >
           <ToggleButton 
             value="traditional" 
             aria-label="traditional conditions"
+            disableRipple
             sx={{ 
-              backgroundColor: conditionType === 'traditional' ? '#f0f0f0' : 'transparent',
-              fontWeight: 400
+              bgcolor: conditionType === 'traditional' ? '#fff' : 'transparent',
+              boxShadow: conditionType === 'traditional' ? '0px 1px 1px rgba(0, 0, 0, 0.03)' : 'none',
+              borderRadius: 2,
+              mr: 0.1,
             }}
           >
             BASIC
           </ToggleButton>
           <ToggleButton 
             value="ai" 
-            aria-label="ai agents"
+            aria-label="ai conditions"
+            disableRipple
             sx={{ 
               display: 'flex', 
+              alignItems: 'center',
               gap: 0.5,
-              backgroundColor: conditionType === 'ai' ? '#f0f0f0' : 'transparent',
-              fontWeight: 400
+              bgcolor: conditionType === 'ai' ? '#fff' : 'transparent',
+              boxShadow: conditionType === 'ai' ? '0px 1px 1px rgba(0, 0, 0, 0.03)' : 'none',
+              borderRadius: 2,
             }}
           >
-            <AutoAwesomeIcon fontSize="small" />
+            <AutoAwesomeIcon sx={{ fontSize: '0.7rem' }} />
             AI AGENT
           </ToggleButton>
         </ToggleButtonGroup>

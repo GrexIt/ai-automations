@@ -243,6 +243,11 @@ const AIAutomationCreator: React.FC = () => {
             placeholder="Automation name"
             value={automationName}
             onChange={(e) => setAutomationName(e.target.value)}
+            sx={{
+              '& .MuiInputBase-root': {
+                height: '40px'
+              }
+            }}
             InputProps={{
               endAdornment: (
                 <Typography variant="body2" color="text.secondary">

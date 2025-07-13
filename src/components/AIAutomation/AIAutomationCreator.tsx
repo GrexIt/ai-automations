@@ -209,7 +209,14 @@ const AIAutomationCreator: React.FC = () => {
             variant="outlined" 
             color="primary"
             onClick={handleOpenTestPanel}
-            startIcon={<PlayArrowIcon />}
+            startIcon={<PlayArrowIcon sx={{ fontSize: '1rem' }} />}
+            size="medium"
+            sx={{ 
+              py: 0.6, 
+              px: 2, 
+              fontSize: '0.85rem',
+              textTransform: 'none'
+            }}
           >
             Test conversation
           </Button>
@@ -273,13 +280,14 @@ const AIAutomationCreator: React.FC = () => {
               textTransform: 'none', 
               px: 3,
               py: 1,
-              borderRadius: 1.5,
+              borderRadius: 100,
               fontWeight: 500,
-              boxShadow: 2,
-              backgroundColor: '#2e7d32',
+              boxShadow: '0px 3px 5px rgba(0, 0, 0, 0.15)',
+              backgroundColor: '#4e6af3',
+              color: 'white',
               '&:hover': {
-                backgroundColor: '#1b5e20',
-                boxShadow: 3
+                backgroundColor: '#3f56cc',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)'
               }
             }}
           >

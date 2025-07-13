@@ -27,7 +27,7 @@ const WhenTriggerCard: React.FC<WhenTriggerCardProps> = ({
   return (
     <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <EventIcon color="primary" sx={{ mr: 2 }} />
+        <EventIcon sx={{ mr: 2, color: '#6c49b8' }} />
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>When</Typography>
       </Box>
       

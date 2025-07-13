@@ -52,7 +52,7 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
       {/* Filter icon with If text - vertically aligned */}
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FilterAltIcon color="primary" sx={{ mr: 2 }} />
+          <FilterAltIcon sx={{ mr: 2, color: '#6c49b8' }} />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>If</Typography>
         </Box>
         

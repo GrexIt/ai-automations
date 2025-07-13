@@ -40,7 +40,7 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
     <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <AssignmentTurnedInIcon color="primary" sx={{ mr: 2 }} />
+          <AssignmentTurnedInIcon sx={{ mr: 2, color: '#6c49b8' }} />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Then</Typography>
         </Box>
         
@@ -85,7 +85,7 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
       
       {/* Add Action button - styled like Condition button in IfConditionCard */}
       {actionType === 'standard' && !standardAction ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 5, mb: 2 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
             <IconButton 
               onClick={() => setStandardAction('send_email')}
@@ -120,7 +120,7 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
           </Box>
         </Box>
       ) : actionType === 'ai' && !showAiActionSelector && !selectedAiAction ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 5, mb: 2 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
             <IconButton 
               onClick={() => setShowAiActionSelector(true)}

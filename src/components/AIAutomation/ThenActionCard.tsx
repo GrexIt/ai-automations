@@ -60,7 +60,7 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
             sx={{ display: 'flex', gap: 0.5 }}
           >
             <AutoAwesomeIcon fontSize="small" />
-            AI ACTION
+            AI AGENT
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>

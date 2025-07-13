@@ -1,25 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import './App.css';
+import AIAutomationCreator from './components/AIAutomation/AIAutomationCreator';
 
 function App() {
+  // Create a theme with Hiver-like styling
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#5664d2',
+      },
+      background: {
+        default: '#f9fafc',
+      },
+    },
+    typography: {
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    },
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <AIAutomationCreator />
+      </div>
+    </ThemeProvider>
   );
 }
 

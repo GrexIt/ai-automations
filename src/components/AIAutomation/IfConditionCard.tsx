@@ -74,7 +74,7 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
             aria-label="traditional conditions"
             sx={{ 
               backgroundColor: conditionType === 'traditional' ? '#f0f0f0' : 'transparent',
-              fontWeight: conditionType === 'traditional' ? 600 : 400
+              fontWeight: 400
             }}
           >
             STANDARD
@@ -86,7 +86,7 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
               display: 'flex', 
               gap: 0.5,
               backgroundColor: conditionType === 'ai' ? '#f0f0f0' : 'transparent',
-              fontWeight: conditionType === 'ai' ? 600 : 400
+              fontWeight: 400
             }}
           >
             <AutoAwesomeIcon fontSize="small" />

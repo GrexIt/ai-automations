@@ -26,7 +26,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
@@ -34,6 +34,8 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import FolderIcon from '@mui/icons-material/Folder';
+import EventIcon from '@mui/icons-material/Event';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -249,10 +251,10 @@ const AIAutomationCreator: React.FC = () => {
 
         {/* Automation Name */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="subtitle1" sx={{ mb: 1 }}>Automation name</Typography>
+          <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold', textAlign: 'left' }}>Name</Typography>
           <TextField
             fullWidth
-            placeholder="Automation name"
+            placeholder="Name"
             value={automationName}
             onChange={(e) => setAutomationName(e.target.value)}
             sx={compactInputStyles}
@@ -269,8 +271,8 @@ const AIAutomationCreator: React.FC = () => {
         {/* When Section */}
         <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <PlayArrowIcon color="primary" sx={{ mr: 2 }} />
-            <Typography variant="subtitle1">When</Typography>
+            <EventIcon color="primary" sx={{ mr: 2 }} />
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>When</Typography>
           </Box>
           
           <Box sx={{ pl: 5 }}>
@@ -300,8 +302,8 @@ const AIAutomationCreator: React.FC = () => {
         <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <RadioButtonUncheckedIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="subtitle1">If</Typography>
+              <FilterAltIcon color="primary" sx={{ mr: 2 }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>If</Typography>
             </Box>
             
             {/* Toggle between traditional and AI conditions */}
@@ -311,17 +313,18 @@ const AIAutomationCreator: React.FC = () => {
               onChange={handleConditionTypeChange}
               size="small"
               aria-label="condition type"
+              sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' } }}
             >
               <ToggleButton value="traditional" aria-label="traditional conditions">
-                Traditional
+                STANDARD
               </ToggleButton>
               <ToggleButton 
                 value="ai" 
                 aria-label="ai agents"
-                sx={{ display: 'flex', gap: 1 }}
+                sx={{ display: 'flex', gap: 0.5 }}
               >
                 <AutoAwesomeIcon fontSize="small" />
-                AI Agent
+                AI AGENT
               </ToggleButton>
             </ToggleButtonGroup>
           </Box>
@@ -395,8 +398,8 @@ const AIAutomationCreator: React.FC = () => {
         <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <CheckCircleOutlineIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="subtitle1">Then</Typography>
+              <AssignmentTurnedInIcon color="primary" sx={{ mr: 2 }} />
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Then</Typography>
             </Box>
             
             {/* Toggle between standard and AI actions */}
@@ -406,17 +409,18 @@ const AIAutomationCreator: React.FC = () => {
               onChange={handleActionTypeChange}
               size="small"
               aria-label="action type"
+              sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' } }}
             >
               <ToggleButton value="standard" aria-label="standard actions">
-                Standard
+                STANDARD
               </ToggleButton>
               <ToggleButton 
                 value="ai" 
                 aria-label="ai actions"
-                sx={{ display: 'flex', gap: 1 }}
+                sx={{ display: 'flex', gap: 0.5 }}
               >
                 <AutoAwesomeIcon fontSize="small" />
-                AI Action
+                AI ACTION
               </ToggleButton>
             </ToggleButtonGroup>
           </Box>

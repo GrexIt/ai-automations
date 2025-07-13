@@ -43,6 +43,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AIAgentBlock from './AIAgentBlock';
 import AIAssist from './AIAssist';
 import AIActionSelector from './AIActionSelector';
+import ConditionSelector from './ConditionSelector';
 
 const AIAutomationCreator: React.FC = () => {
   // Common styles for compact input fields
@@ -58,7 +59,7 @@ const AIAutomationCreator: React.FC = () => {
   
   const [automationName, setAutomationName] = useState('');
   const [triggerType, setTriggerType] = useState('new_conversation');
-  const [condition, setCondition] = useState('');
+  const [conditions, setConditions] = useState<Array<{id: string, type: string, value: string}>>([]);
   const [conditionType, setConditionType] = useState('traditional'); // 'traditional' or 'ai'
   const [aiAgentType, setAiAgentType] = useState('extraction');
   
@@ -339,40 +340,11 @@ const AIAutomationCreator: React.FC = () => {
                 p: 2 
               }}
             >
-              <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
-                <Select
-                  value={condition}
-                  onChange={(e) => setCondition(e.target.value)}
-                  displayEmpty
-                  renderValue={() => "Select condition"}
-                  sx={{ 
-                    ...compactInputStyles,
-                    backgroundColor: 'white'
-                  }}
-                >
-                  <MenuItem value="subject_contains">Subject contains</MenuItem>
-                  <MenuItem value="from_email">From email</MenuItem>
-                  <MenuItem value="body_contains">Body contains</MenuItem>
-                </Select>
-              </FormControl>
-              
-              <Button 
-                startIcon={<AddIcon />} 
-                sx={{ color: 'text.secondary' }}
-              >
-                OR condition
-              </Button>
-              
-              <Box sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<AddIcon />}
-                  sx={{ width: '100%', borderStyle: 'dashed' }}
-                >
-                  + AND condition
-                </Button>
-              </Box>
+              <ConditionSelector 
+                conditions={conditions} 
+                onConditionsChange={setConditions}
+                compactInputStyles={compactInputStyles}
+              />
             </Box>
           ) : (
             // AI Agent conditions UI
@@ -766,7 +738,7 @@ const AIAutomationCreator: React.FC = () => {
                   >
                     <CheckCircleIcon color="success" sx={{ mr: 1 }} />
                     {conditionType === 'traditional' ? (
-                      <Typography>Subject contains "{condition}"</Typography>
+                      <Typography>Subject contains "{conditions.length > 0 ? conditions[0].type : ''}"</Typography>
                     ) : (
                       <Typography>AI Agent: {aiAgentType.charAt(0).toUpperCase() + aiAgentType.slice(1)}</Typography>
                     )}

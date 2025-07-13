@@ -44,18 +44,12 @@ import AIAgentBlock from './AIAgentBlock';
 import AIAssist from './AIAssist';
 import AIActionSelector from './AIActionSelector';
 import ConditionSelector from './ConditionSelector';
+import StandardActionSelector from './StandardActionSelector';
+import AIActionSelectorContainer from './AIActionSelectorContainer';
+import { compactInputStyles } from './styles/formStyles';
 
 const AIAutomationCreator: React.FC = () => {
-  // Common styles for compact input fields
-  const compactInputStyles = {
-    height: '40px',
-    '& .MuiInputBase-root': {
-      height: '40px'
-    },
-    '& .MuiOutlinedInput-input, & .MuiSelect-select': {
-      padding: '5px 14px'
-    }
-  };
+  // Styles imported at the top of the file
   
   const [automationName, setAutomationName] = useState('');
   const [triggerType, setTriggerType] = useState('new_conversation');
@@ -353,15 +347,6 @@ const AIAutomationCreator: React.FC = () => {
                 onAgentTypeChange={handleAiAgentTypeChange}
                 selectedAgentType={aiAgentType}
               />
-              
-              <Box sx={{ pl: 2, mt: 2 }}>
-                <Button 
-                  startIcon={<AddIcon />} 
-                  sx={{ color: 'text.secondary' }}
-                >
-                  OR another AI agent
-                </Button>
-              </Box>
             </Box>
           )}
         </Card>
@@ -400,83 +385,19 @@ const AIAutomationCreator: React.FC = () => {
           <Box sx={{ pl: 5 }}>
             {actionType === 'standard' ? (
               // Standard actions UI
-              <Box 
-                sx={{ 
-                  backgroundColor: '#f5f8ff', 
-                  borderRadius: 1, 
-                  p: 2 
-                }}
-              >
-                <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
-                  <Select
-                    value={standardAction}
-                    onChange={(e) => setStandardAction(e.target.value)}
-                    displayEmpty
-                    renderValue={() => "Select action"}
-                    sx={{ 
-                      ...compactInputStyles,
-                      backgroundColor: 'white'
-                    }}
-                  >
-                    <MenuItem value="send_email">Send email</MenuItem>
-                    <MenuItem value="add_label">Add label</MenuItem>
-                    <MenuItem value="assign_to">Assign to</MenuItem>
-                    <MenuItem value="create_task">Create task</MenuItem>
-                  </Select>
-                </FormControl>
-                
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<AddIcon />}
-                  sx={{ mt: 2, width: '100%', borderStyle: 'dashed' }}
-                >
-                  + Add another action
-                </Button>
-              </Box>
+              <StandardActionSelector
+                standardAction={standardAction}
+                setStandardAction={setStandardAction}
+              />
             ) : (
               // AI actions UI with progressive disclosure
-              <Box>
-                {showAiActionSelector ? (
-                  <AIActionSelector onSelect={handleAiActionSelect} />
-                ) : selectedAiAction ? (
-                  // Show the selected AI action
-                  <Box>
-                    {renderSelectedAiAction()}
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      startIcon={<AddIcon />}
-                      sx={{ width: '100%', borderStyle: 'dashed' }}
-                      onClick={() => setShowAiActionSelector(true)}
-                    >
-                      + Add another AI action
-                    </Button>
-                  </Box>
-                ) : (
-                  // Show initial action selection prompt
-                  <Box 
-                    sx={{ 
-                      backgroundColor: '#f8f5ff', 
-                      borderRadius: 1, 
-                      p: 2,
-                      textAlign: 'center'
-                    }}
-                  >
-                    <Typography variant="body1" sx={{ mb: 2 }}>
-                      Select an AI-powered action to automate your workflow
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      startIcon={<AutoAwesomeIcon />}
-                      onClick={() => setShowAiActionSelector(true)}
-                    >
-                      Choose AI Action
-                    </Button>
-                  </Box>
-                )}
-              </Box>
+              <AIActionSelectorContainer 
+                showAiActionSelector={showAiActionSelector}
+                selectedAiAction={selectedAiAction}
+                setShowAiActionSelector={setShowAiActionSelector}
+                handleAiActionSelect={handleAiActionSelect}
+                renderSelectedAiAction={renderSelectedAiAction}
+              />
             )}
           </Box>
         </Card>

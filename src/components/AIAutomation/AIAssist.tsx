@@ -96,7 +96,7 @@ const AIAssist: React.FC<AIAssistProps> = ({ compactInputStyles = {} }) => {
         </Box>
         
         {/* Chat Messages Container */}
-        <Box sx={{ p: 2, pt: 0, height: '250px', overflowY: 'auto' }}>
+        <Box sx={{ p: 2, pt: 0, height: '500px', overflowY: 'auto' }}>
           {messages.length === 0 ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
               <AutoAwesomeIcon color="disabled" sx={{ fontSize: 40, mb: 2 }} />

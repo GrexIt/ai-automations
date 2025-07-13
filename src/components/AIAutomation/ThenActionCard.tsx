@@ -65,7 +65,7 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
               fontWeight: 400
             }}
           >
-            STANDARD
+            BASIC
           </ToggleButton>
           <ToggleButton 
             value="ai" 

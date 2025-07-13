@@ -77,7 +77,7 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
               fontWeight: 400
             }}
           >
-            STANDARD
+            BASIC
           </ToggleButton>
           <ToggleButton 
             value="ai" 

@@ -134,6 +134,21 @@ const AIAutomationCreator: React.FC = () => {
     setShowAiActionSelector(false);
   };
   
+  // Handle saving and enabling the automation
+  const handleSaveAndEnable = () => {
+    console.log('Saving automation:', {
+      name: automationName,
+      triggerType,
+      conditionType,
+      conditions,
+      aiAgentType,
+      actionType,
+      standardAction,
+      selectedAiAction
+    });
+    // Add actual save logic here
+  };
+
   // Function to render the selected AI action card
   const renderSelectedAiAction = () => {
     const actionMap: Record<string, { title: string, description: string }> = {
@@ -249,15 +264,23 @@ const AIAutomationCreator: React.FC = () => {
         />
 
         {/* Save Button */}
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
           <Button 
             variant="contained" 
-            color="primary"
+            onClick={handleSaveAndEnable}
             disabled={!automationName}
             sx={{ 
               textTransform: 'none', 
-              backgroundColor: '#f0f4f9', 
-              color: '#637381' 
+              px: 3,
+              py: 1,
+              borderRadius: 1.5,
+              fontWeight: 500,
+              boxShadow: 2,
+              backgroundColor: '#2e7d32',
+              '&:hover': {
+                backgroundColor: '#1b5e20',
+                boxShadow: 3
+              }
             }}
           >
             Save and enable

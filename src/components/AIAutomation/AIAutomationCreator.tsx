@@ -4,32 +4,13 @@ import {
   Typography,
   TextField,
   Button,
-  MenuItem,
-  Select,
-  FormControl,
   Card,
-  IconButton,
-  Drawer,
-  CircularProgress,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  InputAdornment,
-  Collapse
+  IconButton
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import CloseIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Import our components
 import AIInsightsPanel from './AIInsightsPanel';
@@ -184,19 +165,6 @@ const AIAutomationCreator: React.FC = () => {
     );
   };
 
-  // AI insights data for the automation
-  const aiInsights = {
-    suggestions: [
-      "Adding sentiment analysis could improve response priority",
-      "Consider extracting customer intent for better routing",
-      "This automation could benefit from classification of request type"
-    ],
-    optimizations: [
-      "AI extraction would be 85% faster than manual review",
-      "Similar automations have reduced response time by 37%"
-    ]
-  };
-  
   return (
     <Box
       sx={{
@@ -306,7 +274,6 @@ const AIAutomationCreator: React.FC = () => {
         <AIInsightsPanel
           isInsightsPanelExpanded={isInsightsPanelExpanded}
           setIsInsightsPanelExpanded={setIsInsightsPanelExpanded}
-          aiInsights={aiInsights}
         />
       )}
       

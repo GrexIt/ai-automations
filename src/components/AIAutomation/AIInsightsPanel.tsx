@@ -25,13 +25,25 @@ interface AIInsight {
 interface AIInsightsPanelProps {
   isInsightsPanelExpanded: boolean;
   setIsInsightsPanelExpanded: (expanded: boolean) => void;
-  aiInsights: AIInsight;
 }
+
+// AI insights data for the automation
+const aiInsights = {
+  suggestions: [
+    "Adding sentiment analysis could improve response priority",
+    "Consider extracting customer intent for better routing",
+    "This automation could benefit from classification of request type"
+  ],
+  optimizations: [
+    "AI extraction would be 85% faster than manual review",
+    "Similar automations have reduced response time by 37%"
+  ]
+};
+
 
 const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({
   isInsightsPanelExpanded,
   setIsInsightsPanelExpanded,
-  aiInsights
 }) => {
   return (
     <Box 

@@ -4,13 +4,10 @@ import {
   Typography,
   TextField,
   Button,
-  Container,
   MenuItem,
   Select,
   FormControl,
   Card,
-  ToggleButton,
-  ToggleButtonGroup,
   IconButton,
   Drawer,
   CircularProgress,
@@ -25,27 +22,20 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import FolderIcon from '@mui/icons-material/Folder';
-import EventIcon from '@mui/icons-material/Event';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Import our components
-import AIAgentBlock from './AIAgentBlock';
 import AIAssist from './AIAssist';
-import AIActionSelector from './AIActionSelector';
-import ConditionSelector from './ConditionSelector';
-import StandardActionSelector from './StandardActionSelector';
-import AIActionSelectorContainer from './AIActionSelectorContainer';
+import IfConditionCard from './IfConditionCard';
+import ThenActionCard from './ThenActionCard';
+import WhenTriggerCard from './WhenTriggerCard';
 import { compactInputStyles } from './styles/formStyles';
 
 const AIAutomationCreator: React.FC = () => {
@@ -264,143 +254,33 @@ const AIAutomationCreator: React.FC = () => {
         </Box>
 
         {/* When Section */}
-        <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <EventIcon color="primary" sx={{ mr: 2 }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>When</Typography>
-          </Box>
-          
-          <Box sx={{ pl: 5 }}>
-            <FormControl fullWidth variant="outlined">
-              <Select
-                value={triggerType}
-                onChange={(e) => setTriggerType(e.target.value)}
-                displayEmpty
-                renderValue={() => "New conversation (inbound) is received"}
-                sx={{ 
-                  ...compactInputStyles,
-                  '& .MuiSelect-select': { 
-                    display: 'flex', 
-                    alignItems: 'center'
-                  }
-                }}
-              >
-                <MenuItem value="new_conversation">New conversation (inbound) is received</MenuItem>
-                <MenuItem value="outbound_email">Outbound email is sent</MenuItem>
-                <MenuItem value="tag_added">Tag is added</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </Card>
+        <WhenTriggerCard 
+          triggerType={triggerType}
+          setTriggerType={setTriggerType}
+        />
 
         {/* If Section */}
-        <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <FilterAltIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>If</Typography>
-            </Box>
-            
-            {/* Toggle between traditional and AI conditions */}
-            <ToggleButtonGroup
-              value={conditionType}
-              exclusive
-              onChange={handleConditionTypeChange}
-              size="small"
-              aria-label="condition type"
-              sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' } }}
-            >
-              <ToggleButton value="traditional" aria-label="traditional conditions">
-                STANDARD
-              </ToggleButton>
-              <ToggleButton 
-                value="ai" 
-                aria-label="ai agents"
-                sx={{ display: 'flex', gap: 0.5 }}
-              >
-                <AutoAwesomeIcon fontSize="small" />
-                AI AGENT
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-          
-          {conditionType === 'traditional' ? (
-            // Traditional conditions UI
-            <Box 
-              sx={{ 
-                pl: 5, 
-                backgroundColor: '#f5f8ff', 
-                borderRadius: 1, 
-                p: 2 
-              }}
-            >
-              <ConditionSelector 
-                conditions={conditions} 
-                onConditionsChange={setConditions}
-                compactInputStyles={compactInputStyles}
-              />
-            </Box>
-          ) : (
-            // AI Agent conditions UI
-            <Box sx={{ pl: 5 }}>
-              <AIAgentBlock 
-                onAgentTypeChange={handleAiAgentTypeChange}
-                selectedAgentType={aiAgentType}
-              />
-            </Box>
-          )}
-        </Card>
+        <IfConditionCard
+          conditionType={conditionType}
+          conditions={conditions}
+          aiAgentType={aiAgentType}
+          handleConditionTypeChange={handleConditionTypeChange}
+          handleAiAgentTypeChange={handleAiAgentTypeChange}
+          setConditions={setConditions}
+        />
 
         {/* Then Section */}
-        <Card variant="outlined" sx={{ mb: 3, p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <AssignmentTurnedInIcon color="primary" sx={{ mr: 2 }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Then</Typography>
-            </Box>
-            
-            {/* Toggle between standard and AI actions */}
-            <ToggleButtonGroup
-              value={actionType}
-              exclusive
-              onChange={handleActionTypeChange}
-              size="small"
-              aria-label="action type"
-              sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, minHeight: '30px' } }}
-            >
-              <ToggleButton value="standard" aria-label="standard actions">
-                STANDARD
-              </ToggleButton>
-              <ToggleButton 
-                value="ai" 
-                aria-label="ai actions"
-                sx={{ display: 'flex', gap: 0.5 }}
-              >
-                <AutoAwesomeIcon fontSize="small" />
-                AI ACTION
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
-          
-          <Box sx={{ pl: 5 }}>
-            {actionType === 'standard' ? (
-              // Standard actions UI
-              <StandardActionSelector
-                standardAction={standardAction}
-                setStandardAction={setStandardAction}
-              />
-            ) : (
-              // AI actions UI with progressive disclosure
-              <AIActionSelectorContainer 
-                showAiActionSelector={showAiActionSelector}
-                selectedAiAction={selectedAiAction}
-                setShowAiActionSelector={setShowAiActionSelector}
-                handleAiActionSelect={handleAiActionSelect}
-                renderSelectedAiAction={renderSelectedAiAction}
-              />
-            )}
-          </Box>
-        </Card>
+        <ThenActionCard
+          actionType={actionType}
+          standardAction={standardAction}
+          showAiActionSelector={showAiActionSelector}
+          selectedAiAction={selectedAiAction}
+          handleActionTypeChange={handleActionTypeChange}
+          setStandardAction={setStandardAction}
+          setShowAiActionSelector={setShowAiActionSelector}
+          handleAiActionSelect={handleAiActionSelect}
+          renderSelectedAiAction={renderSelectedAiAction}
+        />
 
         {/* Save Button */}
         <Box sx={{ mt: 4 }}>

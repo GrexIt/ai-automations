@@ -32,9 +32,10 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Import our components
-import AIAssist from './AIAssist';
+import AIInsightsPanel from './AIInsightsPanel';
 import IfConditionCard from './IfConditionCard';
 import ThenActionCard from './ThenActionCard';
+import TestPanelDrawer from './TestPanelDrawer';
 import WhenTriggerCard from './WhenTriggerCard';
 import { compactInputStyles } from './styles/formStyles';
 
@@ -302,310 +303,30 @@ const AIAutomationCreator: React.FC = () => {
       
       {/* AI Insights Panel - Collapses when test panel is open */}
       {!isTestPanelOpen && (
-        <Box 
-          sx={{ 
-            width: '300px', 
-            display: { xs: 'none', md: 'block' } 
-          }}
-        >
-          <Card variant="outlined" sx={{ position: 'sticky', top: 16 }}>
-            {/* AI Insights Header - Always visible */}
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                justifyContent: 'space-between',
-                alignItems: 'center', 
-                p: 2,
-                cursor: 'pointer',
-                backgroundColor: isInsightsPanelExpanded ? '#f9fafc' : 'transparent',
-                '&:hover': { backgroundColor: '#f9fafc' }
-              }}
-              onClick={() => setIsInsightsPanelExpanded(!isInsightsPanelExpanded)}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ 
-                  display: 'inline-flex',
-                  borderRadius: '50%',
-                  backgroundColor: '#f0f4ff',
-                  p: 1,
-                  mr: 1
-                }}>
-                  <AutoAwesomeIcon color="primary" fontSize="small" />
-                </Box>
-                <Box>
-                  <Typography variant="h6">AI Insights</Typography>
-                  {!isInsightsPanelExpanded && (
-                    <Typography variant="caption" color="text.secondary">
-                      {aiInsights.suggestions.length + aiInsights.optimizations.length} insights available
-                    </Typography>
-                  )}
-                </Box>
-              </Box>
-              {isInsightsPanelExpanded ? 
-                <ExpandLessIcon color="action" /> : 
-                <ExpandMoreIcon color="action" />
-              }
-            </Box>
-            
-            {/* Collapsible content */}
-            <Collapse in={isInsightsPanelExpanded}>
-              <Box sx={{ p: 2, pt: 0 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1, mt: 2, color: 'text.secondary' }}>Suggestions</Typography>
-                <List dense sx={{ pl: 0 }}>
-                  {aiInsights.suggestions.map((suggestion, index) => (
-                    <ListItem key={index} sx={{ px: 0 }}>
-                      <ListItemIcon sx={{ minWidth: 28 }}>
-                        <AutoAwesomeIcon color="primary" fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText primary={suggestion} primaryTypographyProps={{ variant: 'body2' }} />
-                    </ListItem>
-                  ))}
-                </List>
-                
-                <Divider sx={{ my: 2 }} />
-                
-                <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>Optimizations</Typography>
-                <List dense sx={{ pl: 0 }}>
-                  {aiInsights.optimizations.map((optimization, index) => (
-                    <ListItem key={index} sx={{ px: 0 }}>
-                      <ListItemIcon sx={{ minWidth: 28 }}>
-                        <CheckCircleIcon color="success" fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText primary={optimization} primaryTypographyProps={{ variant: 'body2' }} />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            </Collapse>
-          </Card>
-          
-          {/* AI Assist Chat Component */}
-          <AIAssist compactInputStyles={compactInputStyles} />
-        </Box>
+        <AIInsightsPanel
+          isInsightsPanelExpanded={isInsightsPanelExpanded}
+          setIsInsightsPanelExpanded={setIsInsightsPanelExpanded}
+          aiInsights={aiInsights}
+        />
       )}
       
       {/* Test Panel Drawer */}
-      <Drawer
-        anchor="right"
-        open={isTestPanelOpen}
-        onClose={handleCloseTestPanel}
-        sx={{
-          '& .MuiDrawer-paper': { width: { xs: '100%', sm: '450px' }, padding: 2 },
-          '& .MuiBackdrop-root': { backgroundColor: 'rgba(0, 0, 0, 0)' }, // Transparent backdrop
-        }}
-      >
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {/* Drawer Header */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 2 }}>
-            <Typography variant="h6">
-              Test conversation
-              {testStep === 'running_test' && selectedEmail && 
-                <Typography component="span" color="text.secondary" sx={{ ml: 1, fontSize: '0.9rem' }}>
-                  {dummyEmails.find(email => email.id === selectedEmail)?.subject}
-                </Typography>
-              }
-            </Typography>
-            <IconButton onClick={handleCloseTestPanel}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-          <Divider />
-          
-          {/* Test Panel Content */}
-          <Box sx={{ pt: 2, flex: 1, overflow: 'auto' }}>
-            {testStep === 'select_email' ? (
-              /* Email Selection UI */
-              <Box>
-                <Typography variant="subtitle1" gutterBottom>Conversation</Typography>
-                
-                {/* Search Box */}
-                <TextField
-                  fullWidth
-                  placeholder="Search by conversation ID"
-                  variant="outlined"
-                  margin="normal"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton size="small">
-                          <CancelIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{ mb: 2 }}
-                />
-                
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Recent open conversations in all inboxes
-                </Typography>
-                
-                {/* Email List */}
-                <List sx={{ pt: 0 }}>
-                  {dummyEmails.map(email => (
-                    <ListItem 
-                      key={email.id}
-                      onClick={() => handleSelectEmail(email.id)}
-                      sx={{ 
-                        mb: 1, 
-                        border: '1px solid #e0e0e0', 
-                        borderRadius: 1, 
-                        '&:hover': { backgroundColor: '#f5f5f5', cursor: 'pointer' } 
-                      }}
-                    >
-                      <ListItemText
-                        primary={
-                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                            <Box 
-                              sx={{ 
-                                width: 8, 
-                                height: 8, 
-                                borderRadius: '50%', 
-                                backgroundColor: 'green',
-                                mr: 1 
-                              }} 
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {email.tag}
-                            </Typography>
-                          </Box>
-                        }
-                        secondary={
-                          <Box>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
-                              {email.subject}
-                            </Typography>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                              <Typography variant="caption" color="text.secondary">
-                                {email.time}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        }
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            ) : (
-              /* Test Results UI */
-              <Box>
-                <Box 
-                  sx={{ 
-                    backgroundColor: '#f0faf0', 
-                    p: 2, 
-                    borderRadius: 1, 
-                    mb: 3 
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    <CheckCircleIcon color="success" sx={{ mr: 1 }} />
-                    <Typography variant="subtitle1">All actions would've been applied</Typography>
-                  </Box>
-                  <Typography variant="body2">All conditions and actions passed.</Typography>
-                </Box>
-                
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle1" sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    Passed
-                    <Box 
-                      sx={{ 
-                        ml: 1, 
-                        bgcolor: '#e0e0e0', 
-                        px: 1, 
-                        borderRadius: 5, 
-                        fontSize: '0.8rem' 
-                      }}
-                    >
-                      {testResults.filter(r => r.status === 'success').length}
-                    </Box>
-                  </Typography>
-                  
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Conditions</Typography>
-                  <Box 
-                    sx={{ 
-                      p: 2, 
-                      border: '1px solid #e0e0e0', 
-                      borderRadius: 1, 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      mb: 2
-                    }}
-                  >
-                    <CheckCircleIcon color="success" sx={{ mr: 1 }} />
-                    {conditionType === 'traditional' ? (
-                      <Typography>Subject contains "{conditions.length > 0 ? conditions[0].type : ''}"</Typography>
-                    ) : (
-                      <Typography>AI Agent: {aiAgentType.charAt(0).toUpperCase() + aiAgentType.slice(1)}</Typography>
-                    )}
-                  </Box>
-                  
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Actions</Typography>
-                  <Box 
-                    sx={{ 
-                      p: 2, 
-                      border: '1px solid #e0e0e0', 
-                      borderRadius: 1, 
-                      display: 'flex', 
-                      alignItems: 'center' 
-                    }}
-                  >
-                    <CheckCircleIcon color="success" sx={{ mr: 1 }} />
-                    {actionType === 'standard' ? (
-                      <Typography>{standardAction || 'Add label'}</Typography>
-                    ) : (
-                      <Typography>AI Action: {selectedAiAction || 'Summarize'}</Typography>
-                    )}
-                  </Box>
-                </Box>
-                
-                <List>
-                  {testResults.map((result, index) => (
-                    <ListItem key={index} sx={{ px: 0 }}>
-                      <ListItemIcon sx={{ minWidth: 36 }}>
-                        {result.status === 'pending' && <HourglassEmptyIcon color="disabled" />}
-                        {result.status === 'success' && <CheckCircleIcon color="success" />}
-                        {result.status === 'failed' && <CancelIcon color="error" />}
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={result.step} 
-                        secondary={result.status === 'pending' && 'In progress...'}
-                      />
-                      {result.status === 'pending' && (
-                        <CircularProgress size={16} thickness={5} />
-                      )}
-                    </ListItem>
-                  ))}
-                </List>
-                
-                <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-between' }}>
-                  <Button 
-                    variant="outlined"
-                    onClick={handlePickAnotherEmail}
-                  >
-                    Pick another conversation
-                  </Button>
-                  
-                  <Button 
-                    variant="contained" 
-                    color="primary"
-                    onClick={() => {
-                      handleSelectEmail(selectedEmail || '1');
-                    }}
-                  >
-                    Test again
-                  </Button>
-                </Box>
-              </Box>
-            )}
-          </Box>
-        </Box>
-      </Drawer>
+      <TestPanelDrawer
+        isTestPanelOpen={isTestPanelOpen}
+        handleCloseTestPanel={handleCloseTestPanel}
+        testStep={testStep}
+        selectedEmail={selectedEmail}
+        dummyEmails={dummyEmails}
+        handleSelectEmail={handleSelectEmail}
+        handlePickAnotherEmail={handlePickAnotherEmail}
+        testResults={testResults}
+        conditionType={conditionType}
+        conditions={conditions}
+        aiAgentType={aiAgentType}
+        actionType={actionType}
+        standardAction={standardAction}
+        selectedAiAction={selectedAiAction}
+      />
     </Box>
   );
 };

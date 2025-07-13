@@ -42,6 +42,17 @@ import AIAgentBlock from './AIAgentBlock';
 import AIActionSelector from './AIActionSelector';
 
 const AIAutomationCreator: React.FC = () => {
+  // Common styles for compact input fields
+  const compactInputStyles = {
+    height: '40px',
+    '& .MuiInputBase-root': {
+      height: '40px'
+    },
+    '& .MuiOutlinedInput-input, & .MuiSelect-select': {
+      padding: '5px 14px'
+    }
+  };
+  
   const [automationName, setAutomationName] = useState('');
   const [triggerType, setTriggerType] = useState('new_conversation');
   const [condition, setCondition] = useState('');
@@ -243,11 +254,7 @@ const AIAutomationCreator: React.FC = () => {
             placeholder="Automation name"
             value={automationName}
             onChange={(e) => setAutomationName(e.target.value)}
-            sx={{
-              '& .MuiInputBase-root': {
-                height: '40px'
-              }
-            }}
+            sx={compactInputStyles}
             InputProps={{
               endAdornment: (
                 <Typography variant="body2" color="text.secondary">
@@ -273,9 +280,10 @@ const AIAutomationCreator: React.FC = () => {
                 displayEmpty
                 renderValue={() => "New conversation (inbound) is received"}
                 sx={{ 
+                  ...compactInputStyles,
                   '& .MuiSelect-select': { 
                     display: 'flex', 
-                    alignItems: 'center' 
+                    alignItems: 'center'
                   }
                 }}
               >
@@ -333,7 +341,10 @@ const AIAutomationCreator: React.FC = () => {
                   onChange={(e) => setCondition(e.target.value)}
                   displayEmpty
                   renderValue={() => "Select condition"}
-                  sx={{ backgroundColor: 'white' }}
+                  sx={{ 
+                    ...compactInputStyles,
+                    backgroundColor: 'white'
+                  }}
                 >
                   <MenuItem value="subject_contains">Subject contains</MenuItem>
                   <MenuItem value="from_email">From email</MenuItem>
@@ -425,7 +436,10 @@ const AIAutomationCreator: React.FC = () => {
                     onChange={(e) => setStandardAction(e.target.value)}
                     displayEmpty
                     renderValue={() => "Select action"}
-                    sx={{ backgroundColor: 'white' }}
+                    sx={{ 
+                      ...compactInputStyles,
+                      backgroundColor: 'white'
+                    }}
                   >
                     <MenuItem value="send_email">Send email</MenuItem>
                     <MenuItem value="add_label">Add label</MenuItem>

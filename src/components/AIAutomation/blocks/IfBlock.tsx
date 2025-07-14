@@ -27,6 +27,7 @@ interface IfBlockProps {
   setConditions: (conditions: Array<{id: string, type: string, value: string}>) => void;
   onDeleteBlock: (blockId: string) => void;
   availableExtractionFields?: ExtractionField[];
+  sentimentAnalysisEnabled?: boolean;
 }
 
 const IfBlock: React.FC<IfBlockProps> = ({
@@ -38,7 +39,8 @@ const IfBlock: React.FC<IfBlockProps> = ({
   handleAiAgentTypeChange,
   setConditions,
   onDeleteBlock,
-  availableExtractionFields = []
+  availableExtractionFields = [],
+  sentimentAnalysisEnabled = false
 }) => {
   // Add a new condition
   const handleAddCondition = () => {
@@ -136,6 +138,7 @@ const IfBlock: React.FC<IfBlockProps> = ({
               onConditionsChange={setConditions}
               compactInputStyles={compactInputStyles}
               availableExtractionFields={availableExtractionFields}
+              sentimentAnalysisEnabled={sentimentAnalysisEnabled}
             />
           </Box>
         </Box>

@@ -27,6 +27,7 @@ interface Block {
   selectedAiAction?: string;
   selectedAgentType?: string;
   extractionFields?: ExtractionField[];
+  sentimentThreshold?: number;
   extractionSources?: {
     subject: boolean;
     body: boolean;
@@ -236,6 +237,8 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
               availableExtractionFields={blocks
                 .filter(b => b.type === 'then' && Array.isArray(b.extractionFields) && b.extractionFields.length > 0)
                 .flatMap(b => b.extractionFields || [])}
+              sentimentAnalysisEnabled={blocks
+                .some(b => b.type === 'then' && b.selectedAgentType === 'sentiment')}
               {...getIfBlockHandlers(block.id)}
             />
           ) : (

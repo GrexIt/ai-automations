@@ -33,13 +33,15 @@ interface ConditionSelectorProps {
   onConditionsChange: (conditions: Condition[]) => void;
   compactInputStyles?: React.CSSProperties;
   availableExtractionFields?: ExtractionField[];
+  sentimentAnalysisEnabled?: boolean;
 }
 
 const ConditionSelector: React.FC<ConditionSelectorProps> = ({ 
   conditions, 
   onConditionsChange,
   compactInputStyles = {},
-  availableExtractionFields = []
+  availableExtractionFields = [],
+  sentimentAnalysisEnabled = false
 }) => {
   // Handle adding a condition
   const handleAddCondition = (type: 'AND' | 'OR') => {
@@ -108,6 +110,16 @@ const ConditionSelector: React.FC<ConditionSelectorProps> = ({
                       const matchingField = availableExtractionFields.find(field => field.name === fieldName);
                       return matchingField ? `Extracted ${matchingField.name} contains` : condition.type;
                     }
+                    // Display a user-friendly name for sentiment conditions
+                    if (condition.type === 'sentiment_positive') {
+                      return 'Sentiment is positive';
+                    }
+                    if (condition.type === 'sentiment_negative') {
+                      return 'Sentiment is negative';
+                    }
+                    if (condition.type === 'sentiment_neutral') {
+                      return 'Sentiment is neutral';
+                    }
                     return condition.type || "Select condition";
                   }}
                   sx={{ 
@@ -131,6 +143,21 @@ const ConditionSelector: React.FC<ConditionSelectorProps> = ({
                         Extracted {field.name} contains
                       </MenuItem>
                     ))
+                  ]}
+                  
+                  {sentimentAnalysisEnabled && [
+                    <MenuItem key="sentiment-divider" disabled>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', color: '#666', mt: 1 }}>Sentiment Analysis</Typography>
+                    </MenuItem>,
+                    <MenuItem key="sentiment_positive" value="sentiment_positive">
+                      Sentiment is positive
+                    </MenuItem>,
+                    <MenuItem key="sentiment_neutral" value="sentiment_neutral">
+                      Sentiment is neutral
+                    </MenuItem>,
+                    <MenuItem key="sentiment_negative" value="sentiment_negative">
+                      Sentiment is negative
+                    </MenuItem>
                   ]}
                 </Select>
               </FormControl>

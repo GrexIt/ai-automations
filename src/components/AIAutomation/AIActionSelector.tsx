@@ -54,14 +54,14 @@ const AIActionSelector: React.FC<AIActionSelectorProps> = ({ onSelect }) => {
   ];
 
   return (
-    <Box sx={{ mt: 2 }}>
-      <Paper elevation={0} sx={{ p: 2, border: '1px solid #e0e0e0' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+    <Box sx={{ mt: 1.5 }}>
+      <Paper elevation={0} sx={{ p: 1.5, border: '1px solid #e0e0e0' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
           <AutoAwesomeIcon sx={{ mr: 1, color: '#6366f1' }} />
           <Typography variant="h6">AI Action</Typography>
         </Box>
         
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
           {aiActions.map((action) => (
             <Box 
               key={action.id} 
@@ -96,8 +96,8 @@ const AIActionSelector: React.FC<AIActionSelectorProps> = ({ onSelect }) => {
       </Paper>
 
       {/* Example of an expanded AI action */}
-      <Paper elevation={0} sx={{ p: 2, mt: 2, border: '1px solid #e0e0e0' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Paper elevation={0} sx={{ p: 1.5, mt: 1.5, border: '1px solid #e0e0e0' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AutoAwesomeIcon sx={{ mr: 1, color: '#6366f1' }} />
             <Typography variant="h6">Custom AI Prompt</Typography>
@@ -112,7 +112,7 @@ const AIActionSelector: React.FC<AIActionSelectorProps> = ({ onSelect }) => {
           </Box>
         </Box>
 
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 1.5 }}>
           <TextField
             fullWidth
             label="Prompt Instructions"
@@ -124,7 +124,7 @@ const AIActionSelector: React.FC<AIActionSelectorProps> = ({ onSelect }) => {
           />
         </Box>
 
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 1.5 }}>
           <FormControl fullWidth>
             <InputLabel id="ai-model-label">AI Model</InputLabel>
             <Select

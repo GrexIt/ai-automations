@@ -28,10 +28,10 @@ const StandardActionSelector: React.FC<StandardActionSelectorProps> = ({
       sx={{ 
         backgroundColor: '#f5f8ff', 
         borderRadius: 1, 
-        p: 2 
+        p: 1.5 
       }}
     >
-      <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
+      <FormControl fullWidth variant="outlined" sx={{ mb: 0.7 }}>
         <Select
           value={standardAction}
           onChange={handleActionChange}
@@ -53,7 +53,7 @@ const StandardActionSelector: React.FC<StandardActionSelectorProps> = ({
         variant="outlined"
         color="primary"
         startIcon={<AddIcon />}
-        sx={{ mt: 2, width: '100%', borderStyle: 'dashed' }}
+        sx={{ mt: 1.5, width: '100%', borderStyle: 'dashed' }}
       >
         + Add another action
       </Button>

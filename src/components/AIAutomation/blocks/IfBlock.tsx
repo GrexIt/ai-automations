@@ -51,15 +51,15 @@ const IfBlock: React.FC<IfBlockProps> = ({
     <Card 
       variant="outlined" 
       sx={{ 
-        mb: 2, 
-        p: 2, 
+        mb: 1, 
+        p: 1.2, 
         borderRadius: 2, 
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)',
         position: 'relative'
       }}
     >
       {/* Block Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.7, justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <FilterAltIcon sx={{ mr: 1.5, color: '#6c49b8', fontSize: '1.1rem' }} />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>If</Typography>
@@ -77,7 +77,7 @@ const IfBlock: React.FC<IfBlockProps> = ({
       {(conditionType === 'traditional' && conditions.length === 0) || 
       (conditionType === 'ai' && !aiAgentType) ? (
         <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 5, mb: 2 }}>
-          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '18px', py: 0.3, px: 0.8 }}>
             <IconButton 
               onClick={handleAddCondition}
               size="small"
@@ -103,7 +103,8 @@ const IfBlock: React.FC<IfBlockProps> = ({
                 color: 'primary.main',
                 fontWeight: 500,
                 fontSize: '0.9rem',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                ml: 0.5
               }}
             >
               Condition

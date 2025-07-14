@@ -27,17 +27,27 @@ interface FlowContainerProps {
 }
 
 const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlocksChange }) => {
-  // Default initial block is a single "if" block if none provided
+  // Default initial blocks are an "if" block immediately followed by a "then" block
   const [blocks, setBlocksState] = useState<Block[]>(
     initialBlocks.length > 0 
       ? initialBlocks 
-      : [{
-          id: `block-${Date.now()}`,
-          type: 'if',
-          conditionType: 'traditional',
-          conditions: [],
-          aiAgentType: ''
-        }]
+      : [
+          {
+            id: `block-${Date.now()}`,
+            type: 'if',
+            conditionType: 'traditional',
+            conditions: [],
+            aiAgentType: ''
+          },
+          {
+            id: `block-${Date.now() + 1}`,
+            type: 'then',
+            actionType: 'standard',
+            standardAction: '',
+            showAiActionSelector: false,
+            selectedAiAction: ''
+          }
+        ]
   );
 
   // Custom setter that also notifies parent component of changes
@@ -167,6 +177,11 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
     };
   };
 
+  // Function to check if a block is the first If block in the sequence
+  const isFirstIfBlock = (index: number, blockType: BlockType): boolean => {
+    return index === 0 && blockType === 'if';
+  };
+
   return (
     <Box>
       {/* Render all blocks */}
@@ -194,26 +209,29 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
             />
           )}
 
-          {/* "Add Block" button after each block */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-            <Button
-              size="small"
-              variant="outlined"
-              startIcon={<AddIcon />}
-              onClick={(e) => handleOpenBlockMenu(e, index)}
-              sx={{
-                borderRadius: '20px',
-                textTransform: 'none',
-                py: 0.2,
-                px: 1.5,
-                minWidth: '120px',
-                borderColor: '#dfdfdf',
-                color: '#666'
-              }}
-            >
-              Add Block
-            </Button>
-          </Box>
+          {/* "Add Block" button after each block, EXCEPT after the first If block */}
+          {!isFirstIfBlock(index, block.type) && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 0.5 }}>
+              <Button
+                size="small"
+                variant="outlined"
+                startIcon={<AddIcon />}
+                onClick={(e) => handleOpenBlockMenu(e, index)}
+                sx={{
+                  borderRadius: '18px',
+                  textTransform: 'none',
+                  py: 0,
+                  px: 1,
+                  minWidth: '90px',
+                  borderColor: '#dfdfdf',
+                  color: '#666',
+                  fontSize: '0.8rem'
+                }}
+              >
+                Add Block
+              </Button>
+            </Box>
+          )}
         </Box>
       ))}
 

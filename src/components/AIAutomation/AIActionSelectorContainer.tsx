@@ -47,11 +47,11 @@ const AIActionSelectorContainer: React.FC<AIActionSelectorContainerProps> = ({
           sx={{ 
             backgroundColor: '#f8f5ff', 
             borderRadius: 1, 
-            p: 2,
+            p: 1.5,
             textAlign: 'center'
           }}
         >
-          <Typography variant="body1" sx={{ mb: 2 }}>
+          <Typography variant="body1" sx={{ mb: 1.5 }}>
             Select an AI-powered action to automate your workflow
           </Typography>
           <Button

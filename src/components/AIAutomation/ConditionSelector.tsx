@@ -60,9 +60,9 @@ const ConditionSelector: React.FC<ConditionSelectorProps> = ({
   };
 
   return (
-    <Box sx={{ bgcolor: '#f5f8ff', p: 2, borderRadius: 2 }}>
+    <Box sx={{ bgcolor: '#f5f8ff', p: 1.5, borderRadius: 2 }}>
       {conditions.length === 0 ? (
-        <FormControl fullWidth variant="outlined" sx={{ mb: 1 }}>
+        <FormControl fullWidth variant="outlined" sx={{ mb: 0.7 }}>
           <Select
             value=""
             displayEmpty
@@ -85,7 +85,7 @@ const ConditionSelector: React.FC<ConditionSelectorProps> = ({
               sx={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                mb: 1 
+                mb: 0.7 
               }}
             >
               <FormControl variant="outlined" sx={{ flexGrow: 1 }}>
@@ -116,7 +116,7 @@ const ConditionSelector: React.FC<ConditionSelectorProps> = ({
         </Box>
       )}
       
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1.5 }}>
         <Button 
           startIcon={<AddIcon />} 
           color="primary" 

@@ -23,6 +23,7 @@ const AIAutomationCreator: React.FC = () => {
   // Styles imported at the top of the file
   
   // Flow blocks state - for managing the sequence of If and Then blocks
+  // We always start with an If block followed by a Then block
   const [blocks, setBlocks] = useState<Array<{
     id: string;
     type: 'if' | 'then';

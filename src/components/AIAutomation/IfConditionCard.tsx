@@ -44,9 +44,9 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
   };
   
   return (
-    <Card variant="outlined" sx={{ mb: 3, p: 2, borderRadius: 2, boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)' }}>
+    <Card variant="outlined" sx={{ mb: 2, p: 1.2, borderRadius: 2, boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)' }}>
       {/* Filter icon with If text - vertically aligned */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.7, justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <FilterAltIcon sx={{ mr: 1.5, color: '#6c49b8', fontSize: '1.1rem' }} />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>If</Typography>
@@ -56,8 +56,8 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
       {/* Condition button - aligned with the When component's Select */}
       {(conditionType === 'traditional' && conditions.length === 0) || 
        (conditionType === 'ai' && !aiAgentType) ? (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 5, mb: 2 }}>
-          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '20px', py: 0.6, px: 1.2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 5, mb: 1.5 }}>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '18px', py: 0.3, px: 0.8 }}>
             <IconButton 
               onClick={handleAddCondition}
               size="small"

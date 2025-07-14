@@ -11,6 +11,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ConditionSelector from '../ConditionSelector';
 import { compactInputStyles } from '../styles/formStyles';
 
+interface ExtractionField {
+  name: string;
+  description: string;
+  examples: string;
+}
+
 interface IfBlockProps {
   blockId: string;
   conditionType: string;
@@ -20,6 +26,7 @@ interface IfBlockProps {
   handleAiAgentTypeChange: (newType: string) => void;
   setConditions: (conditions: Array<{id: string, type: string, value: string}>) => void;
   onDeleteBlock: (blockId: string) => void;
+  availableExtractionFields?: ExtractionField[];
 }
 
 const IfBlock: React.FC<IfBlockProps> = ({
@@ -30,7 +37,8 @@ const IfBlock: React.FC<IfBlockProps> = ({
   handleConditionTypeChange,
   handleAiAgentTypeChange,
   setConditions,
-  onDeleteBlock
+  onDeleteBlock,
+  availableExtractionFields = []
 }) => {
   // Add a new condition
   const handleAddCondition = () => {
@@ -127,6 +135,7 @@ const IfBlock: React.FC<IfBlockProps> = ({
               conditions={conditions} 
               onConditionsChange={setConditions}
               compactInputStyles={compactInputStyles}
+              availableExtractionFields={availableExtractionFields}
             />
           </Box>
         </Box>

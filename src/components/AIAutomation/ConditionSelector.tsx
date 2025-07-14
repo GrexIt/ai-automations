@@ -22,16 +22,24 @@ export interface Condition {
   value: string;
 }
 
+interface ExtractionField {
+  name: string;
+  description: string;
+  examples: string;
+}
+
 interface ConditionSelectorProps {
   conditions: Condition[];
   onConditionsChange: (conditions: Condition[]) => void;
   compactInputStyles?: React.CSSProperties;
+  availableExtractionFields?: ExtractionField[];
 }
 
 const ConditionSelector: React.FC<ConditionSelectorProps> = ({ 
   conditions, 
   onConditionsChange,
-  compactInputStyles = {}
+  compactInputStyles = {},
+  availableExtractionFields = []
 }) => {
   // Handle adding a condition
   const handleAddCondition = (type: 'AND' | 'OR') => {
@@ -93,15 +101,37 @@ const ConditionSelector: React.FC<ConditionSelectorProps> = ({
                   value={condition.type}
                   onChange={(e) => handleConditionTypeChange(index, e.target.value)}
                   displayEmpty
-                  renderValue={() => condition.type || "Select condition"}
+                  renderValue={() => {
+                    // Display a user-friendly name for extracted field conditions
+                    if (condition.type?.startsWith('extracted_field_')) {
+                      const fieldName = condition.type.replace('extracted_field_', '');
+                      const matchingField = availableExtractionFields.find(field => field.name === fieldName);
+                      return matchingField ? `Extracted ${matchingField.name} contains` : condition.type;
+                    }
+                    return condition.type || "Select condition";
+                  }}
                   sx={{ 
                     ...compactInputStyles,
                     backgroundColor: 'white'
                   }}
                 >
+                  <MenuItem disabled>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', color: '#666' }}>Standard Conditions</Typography>
+                  </MenuItem>
                   <MenuItem value="subject_contains">Subject contains</MenuItem>
                   <MenuItem value="from_email">From email</MenuItem>
                   <MenuItem value="body_contains">Body contains</MenuItem>
+                  
+                  {availableExtractionFields.length > 0 && [
+                    <MenuItem key="divider" disabled>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', color: '#666', mt: 1 }}>Extracted Fields</Typography>
+                    </MenuItem>,
+                    ...availableExtractionFields.map(field => (
+                      <MenuItem key={`extracted_field_${field.name}`} value={`extracted_field_${field.name}`}>
+                        Extracted {field.name} contains
+                      </MenuItem>
+                    ))
+                  ]}
                 </Select>
               </FormControl>
               <IconButton 

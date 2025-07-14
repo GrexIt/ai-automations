@@ -233,6 +233,9 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
               conditions={block.conditions || []}
               aiAgentType={block.aiAgentType || ''}
               onDeleteBlock={handleDeleteBlock}
+              availableExtractionFields={blocks
+                .filter(b => b.type === 'then' && Array.isArray(b.extractionFields) && b.extractionFields.length > 0)
+                .flatMap(b => b.extractionFields || [])}
               {...getIfBlockHandlers(block.id)}
             />
           ) : (

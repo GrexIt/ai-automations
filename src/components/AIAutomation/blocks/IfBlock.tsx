@@ -102,9 +102,8 @@ const IfBlock: React.FC<IfBlockProps> = ({
               sx={{ 
                 color: 'primary.main',
                 fontWeight: 500,
-                fontSize: '0.9rem',
-                cursor: 'pointer',
-                ml: 0.5
+                fontSize: '0.8rem',
+                cursor: 'pointer'
               }}
             >
               Condition

@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
-  Button,
   Card,
   TextField,
-  IconButton,
   Tooltip,
-  Slider,
-  Chip
 } from '@mui/material';
+import ClassificationCategoriesConfig from './ClassificationCategoriesConfig';
+import ExtractionFieldsConfig from './ExtractionFieldsConfig';
+import SentimentAnalysisConfig from './SentimentAnalysisConfig';
 import TextFormatIcon from '@mui/icons-material/TextFormat';
 import CategoryIcon from '@mui/icons-material/Category';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import AddIcon from '@mui/icons-material/Add';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+
+interface ExtractionField {
+  name: string;
+  description: string;
+  examples: string;
+}
 
 export interface AIAgentType {
     value: string;
@@ -30,6 +31,14 @@ export interface AIAgentType {
   interface AIAgentBlockProps {
     onAgentTypeChange: (agentType: string) => void;
     selectedAgentType: string;
+    extractionSources?: {
+      subject: boolean;
+      body: boolean;
+      attachments: boolean;
+    };
+    onExtractionSourcesChange?: (sources: {subject: boolean, body: boolean, attachments: boolean}) => void;
+    extractionFields?: ExtractionField[];
+    onExtractionFieldsChange?: (fields: ExtractionField[]) => void;
   }
   
   export const AI_AGENT_TYPES: AIAgentType[] = [
@@ -61,13 +70,33 @@ export interface AIAgentType {
   
   const AIAgentBlock: React.FC<AIAgentBlockProps> = ({ 
     onAgentTypeChange, 
-    selectedAgentType 
+    selectedAgentType,
+    extractionSources = {
+      subject: true,
+      body: true,
+      attachments: false
+    },
+    onExtractionSourcesChange,
+    extractionFields = [{
+      name: '',
+      description: '',
+      examples: ''
+    }],
+    onExtractionFieldsChange
   }) => {
-    const [showAgentDetails, setShowAgentDetails] = useState(false);
-    const [extractionFields, setExtractionFields] = useState(['']);
-    const [classificationCategories, setClassificationCategories] = useState(['']);
+    const [showAgentDetails, setShowAgentDetails] = useState(true);
+    const [localClassificationCategories, setClassificationCategories] = useState(['']);
     const [sentimentThreshold, setSentimentThreshold] = useState(0.5);
     const [customPrompt, setCustomPrompt] = useState('');
+    
+    const handleSourceChange = (source: 'subject' | 'body' | 'attachments') => {
+      if (onExtractionSourcesChange) {
+        onExtractionSourcesChange({
+          ...extractionSources,
+          [source]: !extractionSources[source]
+        });
+      }
+    };
   
     const toggleAgentDetails = () => {
       setShowAgentDetails(!showAgentDetails);
@@ -126,153 +155,31 @@ export interface AIAgentType {
           </Box>
         </Box>
         
-        {/* Configure AI Agent section - follows progressive disclosure */}
+        {/* Configuration options (always visible) */}
         <Box>
-          <Button
-            onClick={toggleAgentDetails}
-            endIcon={showAgentDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            variant="text"
-            color="primary"
-            sx={{ mb: showAgentDetails ? 2 : 0 }}
-          >
-            {showAgentDetails ? 'Hide configuration' : 'Configure AI Agent'}
-          </Button>
-          
-          {showAgentDetails && (
+          {selectedAgentType && (
             <Box sx={{ p: 2, border: '1px dashed #d0d0d0', borderRadius: 1, mb: 2 }}>
               {selectedAgentType === 'extraction' && (
-                <Box>
-                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                    Configure Extraction Fields
-                  </Typography>
-                  {extractionFields.map((field, index) => (
-                    <Box key={index} sx={{ display: 'flex', mb: 2, gap: 1 }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label={`Field ${index + 1}`}
-                        placeholder="e.g., Customer Name, Order Number"
-                        value={field}
-                        onChange={(e) => {
-                          const newFields = [...extractionFields];
-                          newFields[index] = e.target.value;
-                          setExtractionFields(newFields);
-                        }}
-                      />
-                      {extractionFields.length > 1 && (
-                        <IconButton 
-                          color="error"
-                          onClick={() => {
-                            const newFields = extractionFields.filter((_, i) => i !== index);
-                            setExtractionFields(newFields);
-                          }}
-                        >
-                          <DeleteOutlineIcon />
-                        </IconButton>
-                      )}
-                    </Box>
-                  ))}
-                  <Button 
-                    startIcon={<AddIcon />}
-                    onClick={() => setExtractionFields([...extractionFields, ''])}
-                  >
-                    Add Field
-                  </Button>
-                </Box>
+                <ExtractionFieldsConfig
+                  fields={extractionFields || []}
+                  onFieldsChange={onExtractionFieldsChange || (() => {})}
+                  extractionSources={extractionSources}
+                  onExtractionSourcesChange={onExtractionSourcesChange}
+                />
               )}
               
               {selectedAgentType === 'classification' && (
-                <Box>
-                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                    Configure Classification Categories
-                  </Typography>
-                  {classificationCategories.map((category, index) => (
-                    <Box key={index} sx={{ display: 'flex', mb: 2, gap: 1 }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label={`Category ${index + 1}`}
-                        placeholder="e.g., Complaint, Inquiry, Feedback"
-                        value={category}
-                        onChange={(e) => {
-                          const newCategories = [...classificationCategories];
-                          newCategories[index] = e.target.value;
-                          setClassificationCategories(newCategories);
-                        }}
-                      />
-                      {classificationCategories.length > 1 && (
-                        <IconButton 
-                          color="error"
-                          onClick={() => {
-                            const newCategories = classificationCategories.filter((_, i) => i !== index);
-                            setClassificationCategories(newCategories);
-                          }}
-                        >
-                          <DeleteOutlineIcon />
-                        </IconButton>
-                      )}
-                    </Box>
-                  ))}
-                  <Button 
-                    startIcon={<AddIcon />}
-                    onClick={() => setClassificationCategories([...classificationCategories, ''])}
-                  >
-                    Add Category
-                  </Button>
-                </Box>
+                <ClassificationCategoriesConfig
+                  categories={localClassificationCategories}
+                  onCategoriesChange={setClassificationCategories}
+                />
               )}
               
               {selectedAgentType === 'sentiment' && (
-                <Box>
-                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                    Configure Sentiment Analysis
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Set the threshold for determining positive or negative sentiment (0 = highly negative, 1 = highly positive)
-                  </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography>Threshold:</Typography>
-                    <Box sx={{ flex: 1 }}>
-                      <Slider
-                        value={sentimentThreshold}
-                        onChange={(_e: Event, value: number | number[]) => 
-                          setSentimentThreshold(Array.isArray(value) ? value[0] : value)
-                        }
-                        step={0.05}
-                        marks
-                        min={0}
-                        max={1}
-                        valueLabelDisplay="auto"
-                      />
-                    </Box>
-                    <Box sx={{ width: 80 }}>
-                      <TextField
-                        size="small"
-                        type="number"
-                        value={sentimentThreshold}
-                        onChange={(e) => setSentimentThreshold(Number(e.target.value))}
-                        inputProps={{ step: 0.05, min: 0, max: 1 }}
-                      />
-                    </Box>
-                  </Box>
-                  <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
-                    <Chip 
-                      label="Negative" 
-                      color={sentimentThreshold >= 0.5 ? "default" : "error"} 
-                      variant={sentimentThreshold >= 0.5 ? "outlined" : "filled"}
-                    />
-                    <Chip 
-                      label="Neutral" 
-                      color={Math.abs(sentimentThreshold - 0.5) <= 0.1 ? "primary" : "default"} 
-                      variant={Math.abs(sentimentThreshold - 0.5) <= 0.1 ? "filled" : "outlined"}
-                    />
-                    <Chip 
-                      label="Positive" 
-                      color={sentimentThreshold < 0.5 ? "default" : "success"} 
-                      variant={sentimentThreshold < 0.5 ? "outlined" : "filled"}
-                    />
-                  </Box>
-                </Box>
+                <SentimentAnalysisConfig
+                  sentimentThreshold={sentimentThreshold}
+                  onSentimentThresholdChange={setSentimentThreshold}
+                />
               )}
               
               {selectedAgentType === 'custom' && (

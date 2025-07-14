@@ -7,6 +7,12 @@ import ThenBlock from './blocks/ThenBlock';
 // Type definitions
 type BlockType = 'if' | 'then';
 
+interface ExtractionField {
+  name: string;
+  description: string;
+  examples: string;
+}
+
 interface Block {
   id: string;
   type: BlockType;
@@ -19,6 +25,13 @@ interface Block {
   standardAction?: string;
   showAiActionSelector?: boolean;
   selectedAiAction?: string;
+  selectedAgentType?: string;
+  extractionFields?: ExtractionField[];
+  extractionSources?: {
+    subject: boolean;
+    body: boolean;
+    attachments: boolean;
+  };
 }
 
 interface FlowContainerProps {
@@ -45,7 +58,18 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
             actionType: 'standard',
             standardAction: '',
             showAiActionSelector: false,
-            selectedAiAction: ''
+            selectedAiAction: '',
+            selectedAgentType: '',
+            extractionFields: [{
+              name: '',
+              description: '',
+              examples: ''
+            }],
+            extractionSources: {
+              subject: true,
+              body: true,
+              attachments: false
+            }
           }
         ]
   );
@@ -81,7 +105,13 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
         actionType: 'standard',
         standardAction: '',
         showAiActionSelector: false,
-        selectedAiAction: ''
+        selectedAiAction: '',
+        selectedAgentType: '',
+        extractionSources: {
+          subject: true,
+          body: true,
+          attachments: false
+        }
       };
     }
   };
@@ -152,8 +182,7 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
           updateBlock(blockId, { 
             actionType: newType,
             standardAction: newType === 'standard' ? '' : undefined,
-            showAiActionSelector: newType === 'ai' ? false : undefined,
-            selectedAiAction: newType === 'ai' ? '' : undefined
+            selectedAgentType: newType === 'agent' ? '' : undefined
           });
         }
       },
@@ -168,6 +197,15 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
           selectedAiAction: actionId,
           showAiActionSelector: false 
         });
+      },
+      onAgentTypeChange: (agentType: string) => {
+        updateBlock(blockId, { selectedAgentType: agentType });
+      },
+      onExtractionSourcesChange: (sources: {subject: boolean, body: boolean, attachments: boolean}) => {
+        updateBlock(blockId, { extractionSources: sources });
+      },
+      onExtractionFieldsChange: (fields: ExtractionField[]) => {
+        updateBlock(blockId, { extractionFields: fields });
       },
       renderSelectedAiAction: () => {
         const block = blocks.find(b => b.id === blockId);
@@ -204,6 +242,9 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
               standardAction={block.standardAction || ''}
               showAiActionSelector={block.showAiActionSelector || false}
               selectedAiAction={block.selectedAiAction || ''}
+              selectedAgentType={block.selectedAgentType || ''}
+              extractionSources={block.extractionSources}
+              extractionFields={block.extractionFields}
               onDeleteBlock={handleDeleteBlock}
               {...getThenBlockHandlers(block.id)}
             />

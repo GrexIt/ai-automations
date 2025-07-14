@@ -10,9 +10,17 @@ import {
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import AddIcon from '@mui/icons-material/Add';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StandardActionSelector from '../StandardActionSelector';
 import AIActionSelectorContainer from '../AIActionSelectorContainer';
+import AIAgentBlock from '../AIAgentBlock';
+
+interface ExtractionField {
+  name: string;
+  description: string;
+  examples: string;
+}
 
 interface ThenBlockProps {
   blockId: string;
@@ -20,11 +28,21 @@ interface ThenBlockProps {
   standardAction: string;
   showAiActionSelector: boolean;
   selectedAiAction: string;
+  selectedAgentType: string;
+  extractionSources?: {
+    subject: boolean;
+    body: boolean;
+    attachments: boolean;
+  };
+  extractionFields?: ExtractionField[];
   handleActionTypeChange: (event: React.MouseEvent<HTMLElement>, newType: string | null) => void;
   setStandardAction: (action: string) => void;
   setShowAiActionSelector: (show: boolean) => void;
   handleAiActionSelect: (actionId: string) => void;
   renderSelectedAiAction: () => React.ReactNode;
+  onAgentTypeChange?: (agentType: string) => void;
+  onExtractionSourcesChange?: (sources: {subject: boolean, body: boolean, attachments: boolean}) => void;
+  onExtractionFieldsChange?: (fields: ExtractionField[]) => void;
   onDeleteBlock: (blockId: string) => void;
 }
 
@@ -34,11 +52,17 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
   standardAction,
   showAiActionSelector,
   selectedAiAction,
+  selectedAgentType,
+  extractionSources,
+  extractionFields,
   handleActionTypeChange,
   setStandardAction,
   setShowAiActionSelector,
   handleAiActionSelect,
   renderSelectedAiAction,
+  onAgentTypeChange,
+  onExtractionSourcesChange,
+  onExtractionFieldsChange,
   onDeleteBlock
 }) => {
   return (
@@ -100,20 +124,20 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
               BASIC
             </ToggleButton>
             <ToggleButton 
-              value="ai" 
-              aria-label="ai actions"
+              value="agent" 
+              aria-label="ai action"
               disableRipple
               sx={{ 
                 display: 'flex', 
                 alignItems: 'center',
                 gap: 0.5,
-                bgcolor: actionType === 'ai' ? '#fff' : 'transparent',
-                boxShadow: actionType === 'ai' ? '0px 1px 1px rgba(0, 0, 0, 0.03)' : 'none',
+                bgcolor: actionType === 'agent' ? '#fff' : 'transparent',
+                boxShadow: actionType === 'agent' ? '0px 1px 1px rgba(0, 0, 0, 0.03)' : 'none',
                 borderRadius: 2,
               }}
             >
-              <AutoAwesomeIcon sx={{ fontSize: '0.7rem' }} />
-              AI Action
+              <SmartToyOutlinedIcon sx={{ fontSize: '0.7rem' }} />
+              AI ACTION
             </ToggleButton>
           </ToggleButtonGroup>
 
@@ -155,42 +179,7 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
               sx={{ 
                 color: 'primary.main',
                 fontWeight: 500,
-                fontSize: '0.9rem',
-                cursor: 'pointer'
-              }}
-            >
-              Action
-            </Typography>
-          </Box>
-        </Box>
-      ) : actionType === 'ai' && !showAiActionSelector && !selectedAiAction ? (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', pl: 5, mb: 1.5 }}>
-          <Box sx={{ display: 'inline-flex', alignItems: 'center', backgroundColor: '#f6f8fe', borderRadius: '18px', py: 0.3, px: 0.8 }}>
-            <IconButton 
-              onClick={() => setShowAiActionSelector(true)}
-              size="small"
-              disableRipple
-              sx={{ 
-                backgroundColor: 'primary.main', 
-                color: 'white',
-                '&:hover': { backgroundColor: 'primary.main' },
-                width: 22,
-                height: 22,
-                minHeight: 0,
-                padding: '3px',
                 fontSize: '0.8rem',
-                borderRadius: '50%',
-                mr: 0.8
-              }}
-            >
-              <AddIcon sx={{ fontSize: '16px' }} />
-            </IconButton>
-            <Typography 
-              onClick={() => setShowAiActionSelector(true)}
-              sx={{ 
-                color: 'primary.main',
-                fontWeight: 500,
-                fontSize: '0.9rem',
                 cursor: 'pointer'
               }}
             >
@@ -209,15 +198,16 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
             setStandardAction={setStandardAction}
           />
         </Box>
-      ) : actionType === 'ai' && (showAiActionSelector || selectedAiAction) ? (
-        // AI actions UI with progressive disclosure
+      ) : actionType === 'agent' ? (
+        // AI Action UI (renamed from AI Agent)
         <Box sx={{ pl: 5 }}>
-          <AIActionSelectorContainer 
-            showAiActionSelector={showAiActionSelector}
-            selectedAiAction={selectedAiAction}
-            setShowAiActionSelector={setShowAiActionSelector}
-            handleAiActionSelect={handleAiActionSelect}
-            renderSelectedAiAction={renderSelectedAiAction}
+          <AIAgentBlock
+            selectedAgentType={selectedAgentType || ''}
+            onAgentTypeChange={onAgentTypeChange || (() => {})}
+            extractionSources={extractionSources}
+            onExtractionSourcesChange={onExtractionSourcesChange}
+            extractionFields={extractionFields}
+            onExtractionFieldsChange={onExtractionFieldsChange}
           />
         </Box>
       ) : null}

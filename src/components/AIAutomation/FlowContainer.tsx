@@ -1,0 +1,241 @@
+import React, { useState } from 'react';
+import { Box, Button, Menu, MenuItem } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import IfBlock from './blocks/IfBlock';
+import ThenBlock from './blocks/ThenBlock';
+
+// Type definitions
+type BlockType = 'if' | 'then';
+
+interface Block {
+  id: string;
+  type: BlockType;
+  // If block properties
+  conditionType?: string;
+  conditions?: Array<{id: string, type: string, value: string}>;
+  aiAgentType?: string;
+  // Then block properties
+  actionType?: string;
+  standardAction?: string;
+  showAiActionSelector?: boolean;
+  selectedAiAction?: string;
+}
+
+interface FlowContainerProps {
+  initialBlocks?: Block[];
+  onBlocksChange?: (blocks: Block[]) => void;
+}
+
+const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlocksChange }) => {
+  // Default initial block is a single "if" block if none provided
+  const [blocks, setBlocksState] = useState<Block[]>(
+    initialBlocks.length > 0 
+      ? initialBlocks 
+      : [{
+          id: `block-${Date.now()}`,
+          type: 'if',
+          conditionType: 'traditional',
+          conditions: [],
+          aiAgentType: ''
+        }]
+  );
+
+  // Custom setter that also notifies parent component of changes
+  const setBlocks = (newBlocks: Block[] | ((prevBlocks: Block[]) => Block[])) => {
+    const updatedBlocks = typeof newBlocks === 'function' ? newBlocks(blocks) : newBlocks;
+    setBlocksState(updatedBlocks);
+    if (onBlocksChange) {
+      onBlocksChange(updatedBlocks);
+    }
+  };
+
+  // State for the add block menu
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [currentBlockIndex, setCurrentBlockIndex] = useState<number>(-1);
+  const open = Boolean(anchorEl);
+
+  // Create a new block with default values based on type
+  const createBlock = (type: BlockType): Block => {
+    if (type === 'if') {
+      return {
+        id: `block-${Date.now()}`,
+        type: 'if',
+        conditionType: 'traditional',
+        conditions: [],
+        aiAgentType: ''
+      };
+    } else {
+      return {
+        id: `block-${Date.now()}`,
+        type: 'then',
+        actionType: 'standard',
+        standardAction: '',
+        showAiActionSelector: false,
+        selectedAiAction: ''
+      };
+    }
+  };
+
+  // Open the add block menu
+  const handleOpenBlockMenu = (event: React.MouseEvent<HTMLButtonElement>, index: number) => {
+    setAnchorEl(event.currentTarget);
+    setCurrentBlockIndex(index);
+  };
+
+  // Handle menu close
+  const handleCloseBlockMenu = () => {
+    setAnchorEl(null);
+    setCurrentBlockIndex(-1);
+  };
+
+  // Add a new block after the current block
+  const handleAddBlock = (type: BlockType) => {
+    const newBlock = createBlock(type);
+    const newBlocks = [...blocks];
+    newBlocks.splice(currentBlockIndex + 1, 0, newBlock);
+    setBlocks(newBlocks);
+    handleCloseBlockMenu();
+  };
+
+  // Delete a block by ID
+  const handleDeleteBlock = (blockId: string) => {
+    const newBlocks = blocks.filter(block => block.id !== blockId);
+    // Don't allow deleting all blocks - keep at least one
+    if (newBlocks.length === 0) {
+      return;
+    }
+    setBlocks(newBlocks);
+  };
+
+  // Update a block's properties
+  const updateBlock = (blockId: string, updatedProps: Partial<Block>) => {
+    const blockIndex = blocks.findIndex(block => block.id === blockId);
+    if (blockIndex === -1) return;
+
+    const updatedBlocks = [...blocks];
+    updatedBlocks[blockIndex] = { ...updatedBlocks[blockIndex], ...updatedProps };
+    setBlocks(updatedBlocks);
+  };
+
+  // Generate handlers for If blocks
+  const getIfBlockHandlers = (blockId: string) => {
+    return {
+      handleConditionTypeChange: (event: React.MouseEvent<HTMLElement>, newType: string | null) => {
+        if (newType) {
+          updateBlock(blockId, { conditionType: newType });
+        }
+      },
+      handleAiAgentTypeChange: (newType: string) => {
+        updateBlock(blockId, { aiAgentType: newType });
+      },
+      setConditions: (conditions: Array<{id: string, type: string, value: string}>) => {
+        updateBlock(blockId, { conditions });
+      }
+    };
+  };
+
+  // Generate handlers for Then blocks
+  const getThenBlockHandlers = (blockId: string) => {
+    return {
+      handleActionTypeChange: (event: React.MouseEvent<HTMLElement>, newType: string | null) => {
+        if (newType) {
+          updateBlock(blockId, { 
+            actionType: newType,
+            standardAction: newType === 'standard' ? '' : undefined,
+            showAiActionSelector: newType === 'ai' ? false : undefined,
+            selectedAiAction: newType === 'ai' ? '' : undefined
+          });
+        }
+      },
+      setStandardAction: (action: string) => {
+        updateBlock(blockId, { standardAction: action });
+      },
+      setShowAiActionSelector: (show: boolean) => {
+        updateBlock(blockId, { showAiActionSelector: show });
+      },
+      handleAiActionSelect: (actionId: string) => {
+        updateBlock(blockId, { 
+          selectedAiAction: actionId,
+          showAiActionSelector: false 
+        });
+      },
+      renderSelectedAiAction: () => {
+        const block = blocks.find(b => b.id === blockId);
+        // Placeholder - implement based on your AI action component needs
+        return <Box>Selected AI Action: {block?.selectedAiAction}</Box>;
+      }
+    };
+  };
+
+  return (
+    <Box>
+      {/* Render all blocks */}
+      {blocks.map((block, index) => (
+        <Box key={block.id} sx={{ position: 'relative' }}>
+          {/* Render the appropriate block type */}
+          {block.type === 'if' ? (
+            <IfBlock
+              blockId={block.id}
+              conditionType={block.conditionType || 'traditional'}
+              conditions={block.conditions || []}
+              aiAgentType={block.aiAgentType || ''}
+              onDeleteBlock={handleDeleteBlock}
+              {...getIfBlockHandlers(block.id)}
+            />
+          ) : (
+            <ThenBlock
+              blockId={block.id}
+              actionType={block.actionType || 'standard'}
+              standardAction={block.standardAction || ''}
+              showAiActionSelector={block.showAiActionSelector || false}
+              selectedAiAction={block.selectedAiAction || ''}
+              onDeleteBlock={handleDeleteBlock}
+              {...getThenBlockHandlers(block.id)}
+            />
+          )}
+
+          {/* "Add Block" button after each block */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={(e) => handleOpenBlockMenu(e, index)}
+              sx={{
+                borderRadius: '20px',
+                textTransform: 'none',
+                py: 0.2,
+                px: 1.5,
+                minWidth: '120px',
+                borderColor: '#dfdfdf',
+                color: '#666'
+              }}
+            >
+              Add Block
+            </Button>
+          </Box>
+        </Box>
+      ))}
+
+      {/* Add block menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleCloseBlockMenu}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <MenuItem onClick={() => handleAddBlock('if')} sx={{ minWidth: '120px' }}>If (Condition)</MenuItem>
+        <MenuItem onClick={() => handleAddBlock('then')} sx={{ minWidth: '120px' }}>Then (Action)</MenuItem>
+      </Menu>
+    </Box>
+  );
+};
+
+export default FlowContainer;

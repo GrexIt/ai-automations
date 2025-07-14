@@ -14,8 +14,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 // Import our components
 import AIInsightsPanel from './AIInsightsPanel';
-import IfConditionCard from './IfConditionCard';
-import ThenActionCard from './ThenActionCard';
+import FlowContainer from './FlowContainer';
 import TestPanelDrawer from './TestPanelDrawer';
 import WhenTriggerCard from './WhenTriggerCard';
 import { compactInputStyles } from './styles/formStyles';
@@ -23,17 +22,63 @@ import { compactInputStyles } from './styles/formStyles';
 const AIAutomationCreator: React.FC = () => {
   // Styles imported at the top of the file
   
-  const [automationName, setAutomationName] = useState('');
-  const [triggerType, setTriggerType] = useState('new_conversation');
-  const [conditions, setConditions] = useState<Array<{id: string, type: string, value: string}>>([]);
-  const [conditionType, setConditionType] = useState('traditional'); // 'traditional' or 'ai'
-  const [aiAgentType, setAiAgentType] = useState('extraction');
+  // Flow blocks state - for managing the sequence of If and Then blocks
+  const [blocks, setBlocks] = useState<Array<{
+    id: string;
+    type: 'if' | 'then';
+    // If block properties
+    conditionType?: string;
+    conditions?: Array<{id: string, type: string, value: string}>;
+    aiAgentType?: string;
+    // Then block properties
+    actionType?: string;
+    standardAction?: string;
+    showAiActionSelector?: boolean;
+    selectedAiAction?: string;
+  }>>([{
+    id: `block-${Date.now()}`,
+    type: 'if',
+    conditionType: 'traditional',
+    conditions: [],
+    aiAgentType: 'extraction'
+  }, {
+    id: `block-${Date.now() + 1}`,
+    type: 'then',
+    actionType: 'standard',
+    standardAction: '',
+    showAiActionSelector: false,
+    selectedAiAction: ''
+  }]);
   
-  // Action state
-  const [actionType, setActionType] = useState('standard'); // 'standard' or 'ai'
-  const [standardAction, setStandardAction] = useState('');
-  const [selectedAiAction, setSelectedAiAction] = useState('');
-  const [showAiActionSelector, setShowAiActionSelector] = useState(false);
+  // For backward compatibility with the test panel
+  // We'll use the first 'if' block and the first 'then' block for test panel
+  const firstIfBlock = blocks.find(block => block.type === 'if') as {
+    conditionType?: string;
+    conditions?: Array<{id: string, type: string, value: string}>;
+    aiAgentType?: string;
+  } | undefined || { conditionType: 'traditional', conditions: [], aiAgentType: 'extraction' };
+  
+  const firstThenBlock = blocks.find(block => block.type === 'then') as {
+    actionType?: string;
+    standardAction?: string;
+    selectedAiAction?: string;
+    showAiActionSelector?: boolean;
+  } | undefined || { actionType: 'standard', standardAction: '', selectedAiAction: '', showAiActionSelector: false };
+  
+  const conditionType = firstIfBlock.conditionType || 'traditional';
+  const conditions = firstIfBlock.conditions || [];
+  const aiAgentType = firstIfBlock.aiAgentType || 'extraction';
+  
+  const actionType = firstThenBlock.actionType || 'standard';
+  const standardAction = firstThenBlock.standardAction || '';
+  const selectedAiAction = firstThenBlock.selectedAiAction || '';
+  const showAiActionSelector = firstThenBlock.showAiActionSelector || false;
+  
+  // State for automation name
+  const [automationName, setAutomationName] = useState('');
+  
+  // State for trigger type
+  const [triggerType, setTriggerType] = useState('new_conversation');
   
   // Test panel state
   const [isTestPanelOpen, setIsTestPanelOpen] = useState(false);
@@ -112,26 +157,45 @@ const AIAutomationCreator: React.FC = () => {
   
   const handleConditionTypeChange = (_event: React.MouseEvent<HTMLElement>, newType: string | null) => {
     if (newType !== null) {
-      setConditionType(newType);
+      const ifBlockIndex = blocks.findIndex(block => block.type === 'if');
+      if (ifBlockIndex >= 0) {
+        const newBlocks = [...blocks];
+        newBlocks[ifBlockIndex] = { ...newBlocks[ifBlockIndex], conditionType: newType };
+        setBlocks(newBlocks);
+      }
     }
   };
   
   const handleAiAgentTypeChange = (newType: string) => {
-    setAiAgentType(newType);
+    const ifBlockIndex = blocks.findIndex(block => block.type === 'if');
+    if (ifBlockIndex >= 0) {
+      const newBlocks = [...blocks];
+      newBlocks[ifBlockIndex] = { ...newBlocks[ifBlockIndex], aiAgentType: newType };
+      setBlocks(newBlocks);
+    }
   };
   
   const handleActionTypeChange = (_event: React.MouseEvent<HTMLElement>, newType: string | null) => {
     if (newType !== null) {
-      setActionType(newType);
-      if (newType === 'ai') {
-        setShowAiActionSelector(true);
+      const thenBlockIndex = blocks.findIndex(block => block.type === 'then');
+      if (thenBlockIndex >= 0) {
+        const newBlocks = [...blocks];
+        newBlocks[thenBlockIndex] = { ...newBlocks[thenBlockIndex], actionType: newType };
+        if (newType === 'ai') {
+          newBlocks[thenBlockIndex] = { ...newBlocks[thenBlockIndex], showAiActionSelector: true };
+        }
+        setBlocks(newBlocks);
       }
     }
   };
   
   const handleAiActionSelect = (actionId: string) => {
-    setSelectedAiAction(actionId);
-    setShowAiActionSelector(false);
+    const thenBlockIndex = blocks.findIndex(block => block.type === 'then');
+    if (thenBlockIndex >= 0) {
+      const newBlocks = [...blocks];
+      newBlocks[thenBlockIndex] = { ...newBlocks[thenBlockIndex], selectedAiAction: actionId, showAiActionSelector: false };
+      setBlocks(newBlocks);
+    }
   };
   
   // Handle saving and enabling the automation
@@ -139,12 +203,19 @@ const AIAutomationCreator: React.FC = () => {
     console.log('Saving automation:', {
       name: automationName,
       triggerType,
-      conditionType,
-      conditions,
-      aiAgentType,
-      actionType,
-      standardAction,
-      selectedAiAction
+      blocks: blocks.map(block => ({
+        type: block.type,
+        ...(block.type === 'if' ? {
+          conditionType: block.conditionType,
+          conditions: block.conditions,
+          aiAgentType: block.aiAgentType,
+        } : {}),
+        ...(block.type === 'then' ? {
+          actionType: block.actionType,
+          standardAction: block.standardAction,
+          selectedAiAction: block.selectedAiAction
+        } : {})
+      }))
     });
     // Add actual save logic here
   };
@@ -170,7 +241,14 @@ const AIAutomationCreator: React.FC = () => {
             <Typography variant="subtitle1">{action.title}</Typography>
           </Box>
           <Box>
-            <IconButton size="small" onClick={() => setShowAiActionSelector(true)}>
+            <IconButton size="small" onClick={() => {
+              const thenBlockIndex = blocks.findIndex(block => block.type === 'then');
+              if (thenBlockIndex >= 0) {
+                const newBlocks = [...blocks];
+                newBlocks[thenBlockIndex] = { ...newBlocks[thenBlockIndex], showAiActionSelector: true };
+                setBlocks(newBlocks);
+              }
+            }}>
               <AddIcon fontSize="small" />
             </IconButton>
           </Box>
@@ -247,27 +325,10 @@ const AIAutomationCreator: React.FC = () => {
           setTriggerType={setTriggerType}
         />
 
-        {/* If Section */}
-        <IfConditionCard
-          conditionType={conditionType}
-          conditions={conditions}
-          aiAgentType={aiAgentType}
-          handleConditionTypeChange={handleConditionTypeChange}
-          handleAiAgentTypeChange={handleAiAgentTypeChange}
-          setConditions={setConditions}
-        />
-
-        {/* Then Section */}
-        <ThenActionCard
-          actionType={actionType}
-          standardAction={standardAction}
-          showAiActionSelector={showAiActionSelector}
-          selectedAiAction={selectedAiAction}
-          handleActionTypeChange={handleActionTypeChange}
-          setStandardAction={setStandardAction}
-          setShowAiActionSelector={setShowAiActionSelector}
-          handleAiActionSelect={handleAiActionSelect}
-          renderSelectedAiAction={renderSelectedAiAction}
+        {/* Flow Container - replacing separate If and Then sections */}
+        <FlowContainer 
+          initialBlocks={blocks}
+          onBlocksChange={setBlocks}
         />
 
         {/* Save Button */}

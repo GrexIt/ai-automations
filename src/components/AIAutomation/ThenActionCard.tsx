@@ -97,7 +97,7 @@ const ThenActionCard: React.FC<ThenActionCardProps> = ({
             }}
           >
             <AutoAwesomeIcon sx={{ fontSize: '0.7rem' }} />
-            AI AGENT
+            AI Action
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>

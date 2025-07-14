@@ -51,8 +51,8 @@ const IfBlock: React.FC<IfBlockProps> = ({
     <Card 
       variant="outlined" 
       sx={{ 
-        mb: 1, 
-        p: 1.2, 
+        mb: 3, 
+        p: 2, 
         borderRadius: 2, 
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)',
         position: 'relative'

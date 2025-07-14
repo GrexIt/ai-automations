@@ -69,16 +69,19 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
     <Card 
       variant="outlined" 
       sx={{ 
-        mb: 1, 
-        p: 1.2, 
+        mb: 3, 
+        p: 2, 
         borderRadius: 2, 
         boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)',
         position: 'relative'
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.7, justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <AssignmentTurnedInIcon sx={{ mr: 1.5, color: '#6c49b8', fontSize: '1.1rem' }} />
+          <Box sx={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <AssignmentTurnedInIcon sx={{ color: '#6c49b8', fontSize: '1.2rem' }} />
+          </Box>
+          <Box sx={{ width: 8 }} />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Then</Typography>
         </Box>
         

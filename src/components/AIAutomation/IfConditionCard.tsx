@@ -44,11 +44,14 @@ const IfConditionCard: React.FC<IfConditionCardProps> = ({
   };
   
   return (
-    <Card variant="outlined" sx={{ mb: 2, p: 1.2, borderRadius: 2, boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)' }}>
+    <Card variant="outlined" sx={{ mb: 3, p: 2, borderRadius: 2, boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.08)' }}>
       {/* Filter icon with If text - vertically aligned */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.7, justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <FilterAltIcon sx={{ mr: 1.5, color: '#6c49b8', fontSize: '1.1rem' }} />
+          <Box sx={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <FilterAltIcon sx={{ color: '#6c49b8', fontSize: '1.2rem' }} />
+          </Box>
+          <Box sx={{ width: 8 }} />
           <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>If</Typography>
         </Box>
       </Box>

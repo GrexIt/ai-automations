@@ -12,7 +12,7 @@ import SentimentAnalysisConfig from './SentimentAnalysisConfig';
 import TextFormatIcon from '@mui/icons-material/TextFormat';
 import CategoryIcon from '@mui/icons-material/Category';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface ExtractionField {
@@ -73,7 +73,7 @@ export interface AIAgentType {
     { 
       value: 'custom', 
       label: 'Custom AI Agent', 
-      icon: <SmartToyOutlinedIcon />, 
+      icon: <AutoAwesomeIcon />, 
       description: 'Create a custom AI agent for specific tasks' 
     }
   ];

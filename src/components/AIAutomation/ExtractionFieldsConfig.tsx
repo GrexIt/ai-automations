@@ -40,7 +40,7 @@ interface ExtractionFieldsConfigProps {
 }
 
 // Default drawer width constant
-const DEFAULT_DRAWER_WIDTH = 550; // Increased from 380
+const DEFAULT_DRAWER_WIDTH = 480; // Adjusted for better fit
 
 const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
   fields,
@@ -110,12 +110,20 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
         anchor="right"
         open={drawerOpen}
         onClose={toggleDrawer}
+        variant="temporary"
+        ModalProps={{
+          BackdropProps: {
+            sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' }
+          }
+        }}
         sx={{
           '& .MuiDrawer-paper': { 
             width: drawerWidth,
             padding: 3,
-            boxSizing: 'border-box'
-          },
+            boxSizing: 'border-box',
+            boxShadow: '-4px 0px 10px rgba(0, 0, 0, 0.05)',
+            borderLeft: '1px solid #e0e0e0'
+          }
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>

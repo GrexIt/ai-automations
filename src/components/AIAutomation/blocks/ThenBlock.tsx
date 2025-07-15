@@ -143,7 +143,7 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
                 borderRadius: 2,
               }}
             >
-              <SmartToyOutlinedIcon sx={{ fontSize: '0.7rem' }} />
+              <AutoAwesomeIcon sx={{ fontSize: '0.7rem' }} />
               AI ACTION
             </ToggleButton>
           </ToggleButtonGroup>

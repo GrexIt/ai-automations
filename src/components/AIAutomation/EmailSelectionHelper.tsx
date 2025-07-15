@@ -161,37 +161,40 @@ const EmailSelectionHelper: React.FC<EmailSelectionHelperProps> = ({
   }, [extractionFields]);
 
   return (
-    <Box sx={{ mt: 2, border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
+    <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="h6">Email Selection</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mr: 1 }}>
-            Email Selection
-          </Typography>
-          {hasEnoughEmails ? (
-            <Chip 
-              icon={<CheckCircleIcon />} 
-              label={`${selectedEmails.length} emails selected`} 
-              color="success" 
-              size="small"
-            />
-          ) : (
-            <Chip 
-              icon={<ErrorIcon />} 
-              label={`${selectedEmails.length}/${minRequiredEmails} emails required`} 
-              color="warning" 
-              size="small"
-            />
-          )}
+          <Box 
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: selectedEmails.length >= minRequiredEmails ? '#e7f3eb' : '#fff3e0',
+              color: selectedEmails.length >= minRequiredEmails ? '#2e7d32' : '#e65100',
+              px: 2,
+              py: 0.5,
+              borderRadius: 50,
+              mr: 2
+            }}
+          >
+            {selectedEmails.length >= minRequiredEmails ? (
+              <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} />
+            ) : (
+              <ErrorIcon fontSize="small" sx={{ mr: 1 }} />
+            )}
+            <Typography variant="body2">
+              {selectedEmails.length}/{minRequiredEmails} emails required
+            </Typography>
+          </Box>
+          <Button 
+            variant="outlined"
+            onClick={handleOpen}
+            sx={{ minWidth: '120px', py: 0.8 }}
+            startIcon={<SearchIcon />}
+          >
+            Search
+          </Button>
         </Box>
-        <Button
-          variant="outlined"
-          color="primary"
-          size="small"
-          startIcon={<SearchIcon />}
-          onClick={handleOpen}
-        >
-          Search for Emails
-        </Button>
       </Box>
       
       {!hasEnoughEmails && (

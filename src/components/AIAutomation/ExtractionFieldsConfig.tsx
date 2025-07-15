@@ -39,6 +39,9 @@ interface ExtractionFieldsConfigProps {
   drawerWidth?: number;
 }
 
+// Default drawer width constant
+const DEFAULT_DRAWER_WIDTH = 550; // Increased from 380
+
 const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
   fields,
   onFieldsChange,
@@ -50,7 +53,7 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
   onExtractionSourcesChange,
   selectedEmails: externalSelectedEmails,
   onSelectedEmailsChange: externalOnSelectedEmailsChange,
-  drawerWidth = 380
+  drawerWidth = DEFAULT_DRAWER_WIDTH
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Use internal state if external state handlers aren't provided
@@ -115,8 +118,8 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
           },
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="h6">Configure Extraction Fields</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Typography variant="h6">Configure Extraction</Typography>
           <IconButton onClick={toggleDrawer} edge="end">
             <CloseIcon />
           </IconButton>
@@ -124,8 +127,13 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
         
         <Divider sx={{ mb: 3 }} />
       
+      {/* Section Title */}
+      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+        Extraction Fields
+      </Typography>
+
       {/* Source Checkboxes */}
-      <Box sx={{ mb: 2, p: 1.5, bgcolor: '#f2f2f2', borderRadius: 1 }}>
+      <Box sx={{ mb: 3, p: 2, bgcolor: '#f8f9fa', borderRadius: 1, border: '1px solid #e0e0e0' }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
           Extract from:
         </Typography>
@@ -162,6 +170,8 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
           />
         </FormGroup>
       </Box>
+      
+
       {fields.map((field, index) => (
         <Box key={index} sx={{ mb: 3, p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -196,34 +206,44 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
         </Box>
       ))}
 
-      
       {/* Display warning if no fields are configured */}
       {fields.length === 0 && (
         <Alert severity="info" sx={{ mb: 3 }}>
           Define at least one field to extract from emails.
         </Alert>
       )}
-
+      
+      {/* Email Selection Section */}
+      <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+        Learn from Emails
+      </Typography>
+      
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="body2" color="text.secondary">
+          Select at least 5 emails containing the extraction fields for accurate AI training.
+        </Typography>
+      </Box>
       
       {/* Email selection helper inside the drawer */}
-      {fields.length > 0 && (
-        <Box>
-          <EmailSelectionHelper
-            extractionFields={fields}
-            selectedEmails={selectedEmails}
-            onSelectedEmailsChange={onSelectedEmailsChange}
-            minRequiredEmails={5}
-          />
-        </Box>
-      )}
-      <Divider sx={{ mb: 3 }} />
-      <Button 
-        startIcon={<AddIcon />}
-        onClick={() => onFieldsChange([...fields, {name: '', description: '', examples: ''}])}
-        sx={{ mb: 3 }}
-      >
-        Add Field
-      </Button>
+      <Box sx={{ mb: 3 }}>
+        <EmailSelectionHelper
+          extractionFields={fields}
+          selectedEmails={selectedEmails}
+          onSelectedEmailsChange={onSelectedEmailsChange}
+          minRequiredEmails={5}
+        />
+      </Box>
+      {/* Add Field Button */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+        <Button 
+          startIcon={<AddIcon />}
+          variant="outlined"
+          onClick={() => onFieldsChange([...fields, {name: '', description: '', examples: ''}])}
+          sx={{ px: 2, py: 0.8 }}
+        >
+          Add Field
+        </Button>
+      </Box>      
       </Drawer>
     </Box>
   );

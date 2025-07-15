@@ -21,6 +21,14 @@ interface ExtractionField {
   examples: string;
 }
 
+export interface Email {
+  id: string;
+  subject: string;
+  from: string;
+  date: string;
+  selected: boolean;
+}
+
 export interface AIAgentType {
     value: string;
     label: string;
@@ -39,6 +47,8 @@ export interface AIAgentType {
     onExtractionSourcesChange?: (sources: {subject: boolean, body: boolean, attachments: boolean}) => void;
     extractionFields?: ExtractionField[];
     onExtractionFieldsChange?: (fields: ExtractionField[]) => void;
+    selectedEmails?: Email[];
+    onSelectedEmailsChange?: (emails: Email[]) => void;
   }
   
   export const AI_AGENT_TYPES: AIAgentType[] = [
@@ -77,6 +87,8 @@ export interface AIAgentType {
       attachments: false
     },
     onExtractionSourcesChange,
+    selectedEmails = [],
+    onSelectedEmailsChange,
     extractionFields = [{
       name: '',
       description: '',
@@ -165,6 +177,8 @@ export interface AIAgentType {
                   onFieldsChange={onExtractionFieldsChange || (() => {})}
                   extractionSources={extractionSources}
                   onExtractionSourcesChange={onExtractionSourcesChange}
+                  selectedEmails={selectedEmails}
+                  onSelectedEmailsChange={onSelectedEmailsChange}
                 />
               )}
               

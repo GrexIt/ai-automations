@@ -3,6 +3,7 @@ import { Box, Button, Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import IfBlock from './blocks/IfBlock';
 import ThenBlock from './blocks/ThenBlock';
+import { Email } from './AIAgentBlock';
 
 // Type definitions
 type BlockType = 'if' | 'then';
@@ -28,6 +29,7 @@ interface Block {
   selectedAgentType?: string;
   extractionFields?: ExtractionField[];
   sentimentThreshold?: number;
+  selectedEmails?: Email[];
   extractionSources?: {
     subject: boolean;
     body: boolean;
@@ -93,7 +95,7 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
   const createBlock = (type: BlockType): Block => {
     if (type === 'if') {
       return {
-        id: `block-${Date.now()}`,
+        id: `if-${Date.now()}`,
         type: 'if',
         conditionType: 'traditional',
         conditions: [],
@@ -101,13 +103,16 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
       };
     } else {
       return {
-        id: `block-${Date.now()}`,
+        id: `then-${Date.now()}`,
         type: 'then',
         actionType: 'standard',
         standardAction: '',
-        showAiActionSelector: false,
-        selectedAiAction: '',
-        selectedAgentType: '',
+        extractionFields: [{
+          name: '',
+          description: '',
+          examples: ''
+        }],
+        selectedEmails: [],
         extractionSources: {
           subject: true,
           body: true,
@@ -180,11 +185,7 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
     return {
       handleActionTypeChange: (event: React.MouseEvent<HTMLElement>, newType: string | null) => {
         if (newType) {
-          updateBlock(blockId, { 
-            actionType: newType,
-            standardAction: newType === 'standard' ? '' : undefined,
-            selectedAgentType: newType === 'agent' ? '' : undefined
-          });
+          updateBlock(blockId, { actionType: newType });
         }
       },
       setStandardAction: (action: string) => {
@@ -194,11 +195,9 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
         updateBlock(blockId, { showAiActionSelector: show });
       },
       handleAiActionSelect: (actionId: string) => {
-        updateBlock(blockId, { 
-          selectedAiAction: actionId,
-          showAiActionSelector: false 
-        });
+        updateBlock(blockId, { selectedAiAction: actionId });
       },
+      renderSelectedAiAction: () => null,
       onAgentTypeChange: (agentType: string) => {
         updateBlock(blockId, { selectedAgentType: agentType });
       },
@@ -208,10 +207,8 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
       onExtractionFieldsChange: (fields: ExtractionField[]) => {
         updateBlock(blockId, { extractionFields: fields });
       },
-      renderSelectedAiAction: () => {
-        const block = blocks.find(b => b.id === blockId);
-        // Placeholder - implement based on your AI action component needs
-        return <Box>Selected AI Action: {block?.selectedAiAction}</Box>;
+      onSelectedEmailsChange: (emails: Email[]) => {
+        updateBlock(blockId, { selectedEmails: emails });
       }
     };
   };
@@ -251,6 +248,7 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
               selectedAgentType={block.selectedAgentType || ''}
               extractionSources={block.extractionSources}
               extractionFields={block.extractionFields}
+              selectedEmails={block.selectedEmails}
               onDeleteBlock={handleDeleteBlock}
               {...getThenBlockHandlers(block.id)}
             />

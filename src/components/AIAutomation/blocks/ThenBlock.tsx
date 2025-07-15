@@ -14,7 +14,7 @@ import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StandardActionSelector from '../StandardActionSelector';
 import AIActionSelectorContainer from '../AIActionSelectorContainer';
-import AIAgentBlock from '../AIAgentBlock';
+import AIAgentBlock, { Email } from '../AIAgentBlock';
 
 interface ExtractionField {
   name: string;
@@ -35,6 +35,7 @@ interface ThenBlockProps {
     attachments: boolean;
   };
   extractionFields?: ExtractionField[];
+  selectedEmails?: Email[];
   handleActionTypeChange: (event: React.MouseEvent<HTMLElement>, newType: string | null) => void;
   setStandardAction: (action: string) => void;
   setShowAiActionSelector: (show: boolean) => void;
@@ -43,6 +44,7 @@ interface ThenBlockProps {
   onAgentTypeChange?: (agentType: string) => void;
   onExtractionSourcesChange?: (sources: {subject: boolean, body: boolean, attachments: boolean}) => void;
   onExtractionFieldsChange?: (fields: ExtractionField[]) => void;
+  onSelectedEmailsChange?: (emails: Email[]) => void;
   onDeleteBlock: (blockId: string) => void;
 }
 
@@ -55,6 +57,7 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
   selectedAgentType,
   extractionSources,
   extractionFields,
+  selectedEmails = [],
   handleActionTypeChange,
   setStandardAction,
   setShowAiActionSelector,
@@ -63,6 +66,7 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
   onAgentTypeChange,
   onExtractionSourcesChange,
   onExtractionFieldsChange,
+  onSelectedEmailsChange,
   onDeleteBlock
 }) => {
   return (
@@ -211,6 +215,8 @@ const ThenBlock: React.FC<ThenBlockProps> = ({
             onExtractionSourcesChange={onExtractionSourcesChange}
             extractionFields={extractionFields}
             onExtractionFieldsChange={onExtractionFieldsChange}
+            selectedEmails={selectedEmails}
+            onSelectedEmailsChange={onSelectedEmailsChange}
           />
         </Box>
       ) : null}

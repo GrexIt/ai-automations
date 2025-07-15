@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -7,10 +7,12 @@ import {
   IconButton,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Alert
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EmailSelectionHelper, { Email } from './EmailSelectionHelper';
 
 interface ExtractionField {
   name: string;
@@ -27,6 +29,8 @@ interface ExtractionFieldsConfigProps {
     attachments: boolean;
   };
   onExtractionSourcesChange?: (sources: {subject: boolean, body: boolean, attachments: boolean}) => void;
+  selectedEmails?: Email[];
+  onSelectedEmailsChange?: (emails: Email[]) => void;
 }
 
 const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
@@ -37,8 +41,16 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
     body: true,
     attachments: false
   },
-  onExtractionSourcesChange
+  onExtractionSourcesChange,
+  selectedEmails: externalSelectedEmails,
+  onSelectedEmailsChange: externalOnSelectedEmailsChange
 }) => {
+  // Use internal state if external state handlers aren't provided
+  const [internalSelectedEmails, setInternalSelectedEmails] = useState<Email[]>([]);
+  
+  // Use either external or internal state
+  const selectedEmails = externalSelectedEmails || internalSelectedEmails;
+  const onSelectedEmailsChange = externalOnSelectedEmailsChange || setInternalSelectedEmails;
   const handleSourceChange = (source: 'subject' | 'body' | 'attachments') => {
     if (onExtractionSourcesChange) {
       onExtractionSourcesChange({
@@ -123,38 +135,30 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
             }}
             sx={{ mb: 2 }}
           />
-          
-          <TextField
-            fullWidth
-            size="small"
-            label="Description"
-            placeholder="e.g., Extract the full name of the customer"
-            value={field.description}
-            onChange={(e) => {
-              const newFields = [...fields];
-              newFields[index] = {...newFields[index], description: e.target.value};
-              onFieldsChange(newFields);
-            }}
-            sx={{ mb: 2 }}
-          />
-          
-          <TextField
-            fullWidth
-            size="small"
-            label="Examples"
-            placeholder="e.g., John Smith, Jane Doe, Robert Johnson"
-            value={field.examples}
-            onChange={(e) => {
-              const newFields = [...fields];
-              newFields[index] = {...newFields[index], examples: e.target.value};
-              onFieldsChange(newFields);
-            }}
-          />
         </Box>
       ))}
+
+      
+      {/* Display warning if no fields are configured */}
+      {fields.length === 0 && (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          Define at least one field to extract from emails.
+        </Alert>
+      )}
+      
+      {/* Email selection helper */}
+      {fields.length > 0 && (
+        <EmailSelectionHelper
+          extractionFields={fields}
+          selectedEmails={selectedEmails}
+          onSelectedEmailsChange={onSelectedEmailsChange}
+          minRequiredEmails={5}
+        />
+      )}
       <Button 
         startIcon={<AddIcon />}
         onClick={() => onFieldsChange([...fields, {name: '', description: '', examples: ''}])}
+        sx={{ mb: 3 }}
       >
         Add Field
       </Button>

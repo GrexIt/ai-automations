@@ -273,7 +273,7 @@ const FlowContainer: React.FC<FlowContainerProps> = ({ initialBlocks = [], onBlo
                   fontSize: '0.8rem'
                 }}
               >
-                Add Block
+                Add Step
               </Button>
             </Box>
           )}

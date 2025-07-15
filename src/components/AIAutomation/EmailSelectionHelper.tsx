@@ -216,7 +216,7 @@ const EmailSelectionHelper: React.FC<EmailSelectionHelperProps> = ({
                 fullWidth
                 size="small"
                 variant="outlined"
-                placeholder="Search emails by keyword, subject, or sender"
+                placeholder="Search emails by Extraction Fields ex. order id, invoice number, etc."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

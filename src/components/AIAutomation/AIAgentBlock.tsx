@@ -193,6 +193,7 @@ export interface AIAgentType {
                 <SentimentAnalysisConfig
                   sentimentThreshold={sentimentThreshold}
                   onSentimentThresholdChange={setSentimentThreshold}
+                  drawerWidth={480}
                 />
               )}
               

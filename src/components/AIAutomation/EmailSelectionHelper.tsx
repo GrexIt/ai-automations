@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -63,17 +63,32 @@ const EmailSelectionHelper: React.FC<EmailSelectionHelperProps> = ({
     // In a real implementation, this would call an API to search emails
     setIsSearching(true);
     
-    // Mock search results - this would be replaced with actual API call
+    // Mock search results with random data - always return results for better demo
     setTimeout(() => {
-      const mockResults: Email[] = [
-        { id: '1', subject: 'Order #12345 confirmation', from: 'store@example.com', date: '2025-07-10', selected: false },
-        { id: '2', subject: 'Your order has shipped', from: 'shipping@example.com', date: '2025-07-11', selected: false },
-        { id: '3', subject: 'Invoice for your recent purchase', from: 'billing@example.com', date: '2025-07-12', selected: false },
-        { id: '4', subject: 'Customer feedback requested', from: 'feedback@example.com', date: '2025-07-13', selected: false },
-        { id: '5', subject: 'Order status update', from: 'support@example.com', date: '2025-07-14', selected: false },
-        { id: '6', subject: 'Receipt for order #54321', from: 'receipts@example.com', date: '2025-07-15', selected: false },
-      ];
+      // Generate mock emails that contain extraction field information
+      const mockResults = Array(Math.floor(Math.random() * 5) + 5)
+        .fill(null)
+        .map((_, i) => {
+          // Generate sample content based on extraction fields to make results seem related
+          const extractionContent = extractionFields.map(field => {
+            const fieldName = field.name.toLowerCase();
+            const value = fieldName.includes('order') ? `ORD-${100000 + i}` : 
+                      fieldName.includes('invoice') ? `INV-${200000 + i}` : 
+                      fieldName.includes('customer') ? `Customer ${['John', 'Alice', 'Bob', 'Sarah'][i % 4]} ${['Smith', 'Johnson', 'Williams', 'Jones'][Math.floor(i/4)]}` :
+                      `Sample ${field.name} ${i+1}`;
+            return `${field.name}: ${value}`;
+          }).join(' | ');
+          
+          return {
+            id: `email-${Date.now()}-${i}`,
+            subject: searchQuery ? `RE: ${searchQuery} - ${extractionContent.slice(0, 30)}...` : `Business request #${i+1}`,
+            from: `customer${i+1}@example.com`,
+            date: new Date(Date.now() - i * 86400000).toLocaleDateString(),
+            selected: false
+          };
+        });
       
+      setSearchResults(mockResults);
       // Mark emails that are already selected
       const updatedResults = mockResults.map(email => ({
         ...email,
@@ -106,19 +121,44 @@ const EmailSelectionHelper: React.FC<EmailSelectionHelperProps> = ({
 
   const hasEnoughEmails = selectedEmails.length >= minRequiredEmails;
   
-  // Suggest search queries based on extraction fields
-  const getSuggestedSearchQueries = () => {
-    return extractionFields.map(field => {
-      // Extract first example if available
-      const example = field.examples ? field.examples.split(',')[0].trim() : '';
-      return {
-        field: field.name,
-        query: example || field.name
-      };
-    });
-  };
-
-  const suggestedQueries = getSuggestedSearchQueries();
+  // Define interface for suggestion items
+  interface SuggestionItem {
+    query: string;
+    description: string;
+  }
+  
+  // Generate suggested search queries from extraction fields
+  const suggestedQueries = useMemo<SuggestionItem[]>(() => {
+    if (!extractionFields?.length) return [];
+    
+    // Create suggestions from field names and examples
+    const suggestions: SuggestionItem[] = [];
+    
+    // Add field names as suggestions
+    extractionFields
+      .filter(field => field.name.trim())
+      .forEach(field => {
+        suggestions.push({
+          query: field.name,
+          description: `Search for ${field.name}`
+        });
+        
+        // If examples exist, add them as suggestions too
+        if (field.examples?.trim()) {
+          const exampleList = field.examples.split(',');
+          exampleList.slice(0, 2).forEach(example => {
+            if (example.trim()) {
+              suggestions.push({
+                query: example.trim(),
+                description: `Example of ${field.name}`
+              });
+            }
+          });
+        }
+      });
+    
+    return suggestions;
+  }, [extractionFields]);
 
   return (
     <Box sx={{ mt: 2, border: '1px solid #e0e0e0', borderRadius: 1, p: 2 }}>
@@ -198,15 +238,23 @@ const EmailSelectionHelper: React.FC<EmailSelectionHelperProps> = ({
               <Box sx={{ mb: 2 }}>
                 <Typography variant="subtitle2">Suggested searches:</Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 0.5 }}>
-                  {suggestedQueries.map((suggestion, index) => (
-                    <Chip 
-                      key={index}
-                      label={suggestion.query} 
-                      size="small" 
-                      onClick={() => setSearchQuery(suggestion.query)}
-                      variant="outlined"
-                    />
-                  ))}
+                  {suggestedQueries.length > 0 ? (
+                    suggestedQueries.slice(0, 3).map((suggestion: SuggestionItem, index: number) => (
+                      <Chip 
+                        key={index}
+                        label={suggestion.query} 
+                        size="small" 
+                        onClick={() => setSearchQuery(suggestion.query)}
+                        color="primary"
+                        variant="outlined"
+                        sx={{ mb: 0.5 }}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      Add extraction field names to see suggestions
+                    </Typography>
+                  )}
                 </Box>
               </Box>
             )}
@@ -280,10 +328,29 @@ const EmailSelectionHelper: React.FC<EmailSelectionHelperProps> = ({
             </Box>
           )}
           
-          {!isSearching && searchResults.length === 0 && searchQuery && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4, flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="body1" sx={{ mb: 1, color: '#666' }}>No emails found matching "{searchQuery}"</Typography>
-              <Typography variant="body2" color="text.secondary">Try different search terms or check your inbox</Typography>
+          {searchResults.length === 0 && searchQuery && !isSearching && (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              <Typography variant="body1">No emails found matching "{searchQuery}"</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Try different search terms or check your inbox
+              </Typography>
+              {suggestedQueries.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="body2">Try one of these instead:</Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1, justifyContent: 'center' }}>
+                    {suggestedQueries.slice(0, 3).map((suggestion: SuggestionItem, index: number) => (
+                      <Chip 
+                        key={index}
+                        label={suggestion.query} 
+                        size="small" 
+                        onClick={() => setSearchQuery(suggestion.query)}
+                        color="primary"
+                        variant="outlined"
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
             </Box>
           )}
         </DialogContent>

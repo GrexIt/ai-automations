@@ -8,8 +8,13 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
-  Alert
+  Alert,
+  Drawer,
+  Divider,
+  Chip
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EmailSelectionHelper, { Email } from './EmailSelectionHelper';
@@ -31,6 +36,7 @@ interface ExtractionFieldsConfigProps {
   onExtractionSourcesChange?: (sources: {subject: boolean, body: boolean, attachments: boolean}) => void;
   selectedEmails?: Email[];
   onSelectedEmailsChange?: (emails: Email[]) => void;
+  drawerWidth?: number;
 }
 
 const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
@@ -43,8 +49,10 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
   },
   onExtractionSourcesChange,
   selectedEmails: externalSelectedEmails,
-  onSelectedEmailsChange: externalOnSelectedEmailsChange
+  onSelectedEmailsChange: externalOnSelectedEmailsChange,
+  drawerWidth = 380
 }) => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   // Use internal state if external state handlers aren't provided
   const [internalSelectedEmails, setInternalSelectedEmails] = useState<Email[]>([]);
   
@@ -60,11 +68,61 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
     }
   };
 
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
   return (
     <Box>
-      <Typography variant="subtitle2" sx={{ mb: 2 }}>
-        Configure Extraction Fields
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="subtitle2">
+          Extraction Fields {fields.length > 0 && `(${fields.length})`}
+        </Typography>
+        <Button 
+          variant="outlined" 
+          size="small" 
+          startIcon={<EditIcon />}
+          onClick={toggleDrawer}
+        >
+          Configure
+        </Button>
+      </Box>
+      
+      {/* Show brief summary when drawer is closed */}
+      {!drawerOpen && fields.length > 0 && (
+        <Box sx={{ mb: 2 }}>
+          {fields.map((field, index) => (
+            <Chip 
+              key={index}
+              label={field.name || `Field ${index + 1}`}
+              size="small"
+              sx={{ mr: 1, mb: 1 }}
+            />
+          ))}
+        </Box>
+      )}
+      
+      {/* Drawer for configuration */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={toggleDrawer}
+        sx={{
+          '& .MuiDrawer-paper': { 
+            width: drawerWidth,
+            padding: 3,
+            boxSizing: 'border-box'
+          },
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Typography variant="h6">Configure Extraction Fields</Typography>
+          <IconButton onClick={toggleDrawer} edge="end">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        
+        <Divider sx={{ mb: 3 }} />
       
       {/* Source Checkboxes */}
       <Box sx={{ mb: 2, p: 1.5, bgcolor: '#f2f2f2', borderRadius: 1 }}>
@@ -145,16 +203,20 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
           Define at least one field to extract from emails.
         </Alert>
       )}
+
       
-      {/* Email selection helper */}
+      {/* Email selection helper inside the drawer */}
       {fields.length > 0 && (
-        <EmailSelectionHelper
-          extractionFields={fields}
-          selectedEmails={selectedEmails}
-          onSelectedEmailsChange={onSelectedEmailsChange}
-          minRequiredEmails={5}
-        />
+        <Box>
+          <EmailSelectionHelper
+            extractionFields={fields}
+            selectedEmails={selectedEmails}
+            onSelectedEmailsChange={onSelectedEmailsChange}
+            minRequiredEmails={5}
+          />
+        </Box>
       )}
+      <Divider sx={{ mb: 3 }} />
       <Button 
         startIcon={<AddIcon />}
         onClick={() => onFieldsChange([...fields, {name: '', description: '', examples: ''}])}
@@ -162,6 +224,7 @@ const ExtractionFieldsConfig: React.FC<ExtractionFieldsConfigProps> = ({
       >
         Add Field
       </Button>
+      </Drawer>
     </Box>
   );
 };
